@@ -6,6 +6,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 
 import { content } from "@/content/site";
+import { useTheme } from "@/components/use-theme";
 import { BlackHoleHeroSection } from "@/components/black-hole-hero-section";
 import AeroShards from "@/components/AeroShards";
 
@@ -13,6 +14,20 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 export function Ingress({ opened }: { opened: boolean }) {
   const root = useRef<HTMLElement | null>(null);
+  const { theme } = useTheme();
+
+  // the WebGL field is coloured from the active palette so it retints with the toggle
+  const field =
+    theme === "deep"
+      ? { background: "#021526", shard: "#03346e", accent: "#6eacda" }
+      : { background: "#0b0604", shard: "#b8461c", accent: "#f9b637" };
+
+  // the black-hole disc runs a hotter, more saturated orange in deep mode so it
+  // pops against the blue; default mode keeps the component's normal orange
+  const hole =
+    theme === "deep"
+      ? { hot: "#ffe7c2", mid: "#ff6a00", cool: "#b2340a" }
+      : { hot: "#fff3de", mid: "#ff9838", cool: "#8e3a0b" };
 
   // runs once on the tear
   useGSAP(
@@ -102,9 +117,9 @@ export function Ingress({ opened }: { opened: boolean }) {
       <div className="seq__stage">
         <div className="ingress__bg" aria-hidden="true">
           <AeroShards
-            backgroundColor="#0b0604"
-            shardColor="#b8461c"
-            accentColor="#f9b637"
+            backgroundColor={field.background}
+            shardColor={field.shard}
+            accentColor={field.accent}
             placement="full"
             flow="stream"
             material="pearl"
@@ -158,6 +173,9 @@ export function Ingress({ opened }: { opened: boolean }) {
                 resolution={0.66}
                 steps={260}
                 maxDpr={1.5}
+                hotColor={hole.hot}
+                midColor={hole.mid}
+                coolColor={hole.cool}
               />
             </span>
             <span className="ingress__wm-letter ingress__wm-item">I</span>

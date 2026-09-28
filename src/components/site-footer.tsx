@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 import { content } from "@/content/site";
 
 export function SiteFooter() {
@@ -11,7 +13,16 @@ export function SiteFooter() {
           </p>
 
           <div className="ft__grid">
-            <p className="ft__disclaimer">{content.footer.disclaimer}</p>
+            <div className="ft__intro">
+              <p className="ft__disclaimer">{content.footer.disclaimer}</p>
+              <Image
+                className="ft__logo"
+                src="/media/logo-for-nav.png"
+                alt="Void Society"
+                width={128}
+                height={128}
+              />
+            </div>
 
             {content.footer.columns.map((col) => (
               <nav key={col.title} aria-label={col.title}>

@@ -33,7 +33,14 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${archivoBlack.variable} ${jetbrainsMono.variable} ${croissantOne.variable} h-full antialiased`}
     >
-      <body className="flex min-h-full flex-col bg-iron-950">{children}</body>
+      <body className="flex min-h-full flex-col bg-iron-950">
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{if(localStorage.getItem('void-theme')==='deep')document.documentElement.setAttribute('data-theme','deep')}catch(e){}`,
+          }}
+        />
+        {children}
+      </body>
     </html>
   );
 }

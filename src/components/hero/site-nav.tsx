@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import Image from "next/image";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 
@@ -36,7 +37,16 @@ export function SiteNav() {
       <div className="mx-auto flex w-full max-w-[1440px] items-center justify-between gap-6 px-6 py-4 lg:px-10">
         <a href="#" className="nav-brand-link">
           <span className="nav-brand">
-            VOID <span className="nav-brand__mark">SOCIETY</span>
+            VOID
+            <Image
+              className="nav-brand__logo"
+              src="/media/logo-for-nav.png"
+              alt=""
+              aria-hidden="true"
+              width={128}
+              height={128}
+            />
+            <span className="nav-brand__mark">SOCIETY</span>
           </span>
         </a>
 
