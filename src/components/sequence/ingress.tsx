@@ -7,7 +7,7 @@ import { useGSAP } from "@gsap/react";
 
 import { content } from "@/content/site";
 import { BlackHoleHeroSection } from "@/components/black-hole-hero-section";
-import WebThreads from "@/components/WebThreads";
+import AeroShards from "@/components/AeroShards";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -101,28 +101,36 @@ export function Ingress({ opened }: { opened: boolean }) {
     <section ref={root} className="seq" aria-labelledby="ingress-headline">
       <div className="seq__stage">
         <div className="ingress__bg" aria-hidden="true">
-          <WebThreads
-            color1="#e73f1e"
-            color2="#f9b637"
-            color3="#ffdd9c"
-            speed={0.2}
-            threadCount={6}
-            frequency={5}
-            spread={0.18}
-            taper={1}
-            position={0.5}
-            fanMode="center"
-            glow={0.02}
-            falloff={0.6}
-            thickness={1.1}
-            brightness={0.6}
-            opacity={1}
-            mirror
-            shimmer={false}
-            grain
-            grainIntensity={0.05}
-            mouseInteraction
-            mouseStrength={0.3}
+          <AeroShards
+            backgroundColor="#0b0604"
+            shardColor="#b8461c"
+            accentColor="#f9b637"
+            placement="full"
+            flow="stream"
+            material="pearl"
+            detail="balanced"
+            effect="none"
+            scale={1}
+            spread={1}
+            depth={1}
+            speed={1}
+            spin={1}
+            interaction="repel"
+            density={1.5}
+            shardSize={1.1}
+            stretch={1}
+            turbulence={1}
+            glow={1}
+            edgeSoftness={2}
+            bloom={0.5}
+            grain={0.05}
+            chromaticAberration={0.0075}
+            transitionDuration={1}
+            interactionRadius={1.5}
+            interactionStrength={0.5}
+            rippleIntensity={1}
+            holdToGather
+            paused={false}
           />
         </div>
 

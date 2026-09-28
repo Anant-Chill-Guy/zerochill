@@ -8,7 +8,6 @@ import { Preloader } from "@/components/preloader";
 import { SiteNav } from "@/components/hero/site-nav";
 import { Ingress } from "@/components/sequence/ingress";
 import { Statement } from "@/components/sequence/statement";
-import { Globe } from "@/components/sequence/globe";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -46,7 +45,6 @@ export function VoidLanding() {
 
       <Ingress opened={opened} />
       <Statement />
-      <Globe />
     </div>
   );
 }

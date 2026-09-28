@@ -13,8 +13,8 @@ export const content = {
   },
 
   ingress: {
-    eyebrow: "00 / Ingress",
-    headline: "Forty-two vaults are open.",
+    eyebrow: "",
+    headline: "THE CTF",
     sub: "Nobody has reached the bottom.",
     readout: [
       { label: "Layers", value: "6" },

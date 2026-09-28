@@ -112,7 +112,7 @@
     line-height: 1;
     letter-spacing: 0.01em;
     text-transform: uppercase;
-    color: var(--color-rose);
+    color: var(--color-amber);
     white-space: nowrap;
     transition: color 0.22s ease;
   }
@@ -133,7 +133,7 @@
     font-size: 0.75rem;
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: var(--color-rose);
+    color: var(--color-amber);
     transition: color 0.2s ease;
   }
 
@@ -253,6 +253,10 @@
     color: var(--color-rose);
     background: transparent;
     border: 1px solid var(--rule-strong);
+  }
+
+  .nav-shell .btn--ghost {
+    color: var(--color-amber);
   }
 
   .btn--sm {
