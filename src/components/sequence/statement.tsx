@@ -14,6 +14,13 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 const HOLD_VH = 260;
 
+// overlay narration revealed word-by-word once the plant window is open
+const MESSAGE =
+  "As a Mossad operative, you seem pretty thirsty for action. Looks like war is waiting for you. Best of luck, soldier.";
+const MESSAGE_WORDS = MESSAGE.split(" ");
+const HIGHLIGHT = new Set(["mossad", "soldier"]);
+const bareWord = (w: string) => w.replace(/[^a-z]/gi, "").toLowerCase();
+
 // layout offset survives transforms unlike a bounding rect
 function offsetWithin(el: HTMLElement, ancestor: HTMLElement) {
   let x = 0;
@@ -40,6 +47,9 @@ export function Statement() {
       const window_ = q(".stmt__circle")[0] as HTMLElement;
       const caption = q(".stmt__caption")[0] as HTMLElement;
       const veil = q(".stmt__veil")[0] as HTMLElement;
+      const message = q(".stmt__message")[0] as HTMLElement;
+      const bar = q(".stmt__message-bar")[0] as HTMLElement;
+      const words = q(".stmt__word-in") as HTMLElement[];
 
       if (!stage || !slot || !window_ || lines.length === 0) return;
 
@@ -72,14 +82,19 @@ export function Statement() {
       if (reduce) {
         park();
         gsap.set(inners, { yPercent: 0, autoAlpha: 1 });
-        gsap.set([caption, veil, window_], { autoAlpha: 1 });
+        gsap.set([caption, veil, window_, message], { autoAlpha: 1 });
+        gsap.set(words, { autoAlpha: 1, scale: 1 });
+        gsap.set(bar, { autoAlpha: 1, scaleX: 1 });
         lines.forEach((l) => l.classList.add("is-lit"));
         return;
       }
 
       park();
       gsap.set(inners, { yPercent: 112 });
-      gsap.set([caption, veil, window_], { autoAlpha: 0 });
+      gsap.set([caption, veil, window_, message], { autoAlpha: 0 });
+      // words shrunk to a point; they pop out one after another on scroll
+      gsap.set(words, { autoAlpha: 0, scale: 0.4 });
+      gsap.set(bar, { autoAlpha: 0, scaleX: 0.6 });
 
       const thresholds = lines.map((_, i) => 0.04 + i * 0.085);
 
@@ -129,10 +144,35 @@ export function Statement() {
       );
 
       tl.to(veil, { autoAlpha: 1, duration: 0.18 }, 0.44);
-      tl.to(caption, { autoAlpha: 1, duration: 0.06 }, 0.62);
-      tl.to(inners, { autoAlpha: 0, duration: 0.08 }, 0.64);
+      // clear the statement lines so the plant reads clean under the bubble
+      tl.to(inners, { autoAlpha: 0, duration: 0.1 }, 0.5);
+      tl.to(caption, { autoAlpha: 1, duration: 0.06 }, 0.58);
 
-      tl.to({}, { duration: 0.26 }, 0.68);
+      // kinetic type: accent rule pops in, then each word pops out like a
+      // bubble, one after another as you keep scrolling
+      tl.to(message, { autoAlpha: 1, duration: 0.05 }, 0.56);
+      tl.to(
+        bar,
+        {
+          autoAlpha: 1,
+          scaleX: 1,
+          transformOrigin: "left center",
+          ease: "back.out(2)",
+          duration: 0.1,
+        },
+        0.58,
+      );
+      tl.to(
+        words,
+        {
+          scale: 1,
+          autoAlpha: 1,
+          ease: "back.out(2.4)",
+          duration: 0.16,
+          stagger: 0.04,
+        },
+        0.62,
+      );
     },
     { scope: root },
   );
@@ -180,6 +220,21 @@ export function Statement() {
         </div>
 
         <div className="stmt__veil" aria-hidden="true" />
+
+        <p className="stmt__message" aria-label={MESSAGE}>
+          <span className="stmt__message-bar" aria-hidden="true" />
+          {MESSAGE_WORDS.map((w, i) => (
+            <span key={i} className="stmt__word" aria-hidden="true">
+              <span
+                className={`stmt__word-in${
+                  HIGHLIGHT.has(bareWord(w)) ? " stmt__word-in--hot" : ""
+                }`}
+              >
+                {w}
+              </span>
+            </span>
+          ))}
+        </p>
 
         <span className="stmt__caption">{content.statement.circleCaption}</span>
       </div>

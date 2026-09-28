@@ -1027,54 +1027,78 @@
 }
 
 @layer components {
-  .ingress__grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    align-content: center;
-    gap: clamp(2rem, 5vw, 4rem);
-  }
-
-  @media (min-width: 900px) {
-    .ingress__grid {
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
-      align-items: center;
-      gap: clamp(2.5rem, 6vw, 6rem);
-    }
-  }
-
-  .ingress__media {
-    position: relative;
+  .ingress__bg {
+    position: absolute;
+    inset: 0;
     z-index: 0;
-    width: 100%;
+    pointer-events: none;
   }
 
-  .ingress__mosaic {
-    display: block;
-    width: 100%;
-    height: auto;
-  }
-
-  .ingress__copy {
+  .ingress__hero {
     display: flex;
     flex-direction: column;
+    align-items: center;
     justify-content: center;
+    gap: clamp(0.75rem, 2.4vw, 1.6rem);
+    text-align: center;
+  }
+
+  .ingress__eyebrow {
+    will-change: transform, opacity;
+  }
+
+  .ingress__wordmark {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(0.08rem, 0.7vw, 0.4rem);
+    font-family: var(--font-display);
+    font-size: clamp(3.5rem, 15vw, 12rem);
+    line-height: 0.86;
+    letter-spacing: -0.03em;
+    text-transform: uppercase;
+    will-change: transform, opacity;
+  }
+
+  .ingress__wm-item {
+    display: inline-flex;
+    will-change: transform, opacity;
+  }
+
+  .ingress__wm-letter {
+    color: var(--color-bone);
+  }
+
+  /* the O slot: the black hole renders as its full round element. The disc
+     fade is baked into the shader, so no mask, box or border here. */
+  .ingress__wm-hole {
+    position: relative;
+    width: 1.05em;
+    height: 1.05em;
+  }
+
+  .ingress__hero-copy {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
   }
 
   .ingress__headline {
-    margin-top: 1rem;
+    margin: 0;
     font-family: var(--font-display);
-    font-size: clamp(2.1rem, 5.4vw, 4.2rem);
-    line-height: 0.98;
+    font-size: clamp(1.6rem, 3.6vw, 2.9rem);
+    line-height: 1;
     letter-spacing: -0.025em;
     color: var(--color-bone);
-    max-width: 16ch;
+    max-width: 20ch;
   }
 
   .ingress__sub {
-    margin-top: 0.9rem;
+    margin: 0;
     font-size: clamp(0.9rem, 1.15vw, 1.05rem);
     color: var(--color-ink-300);
-    max-width: 44ch;
+    max-width: 46ch;
   }
 
   .ingress__readout {
@@ -1208,6 +1232,55 @@
     text-transform: uppercase;
     color: var(--color-cream);
     opacity: 0;
+  }
+
+  .stmt__message {
+    position: absolute;
+    left: clamp(1.25rem, 5vw, 4rem);
+    right: clamp(1.25rem, 5vw, 4rem);
+    top: clamp(4.5rem, 14vh, 7.5rem);
+    z-index: 8;
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.4rem, 4vw, 3.1rem);
+    line-height: 1.12;
+    letter-spacing: -0.015em;
+    text-transform: uppercase;
+    color: var(--color-bone);
+    text-align: left;
+    text-shadow:
+      0 2px 22px rgba(11, 6, 4, 0.7),
+      0 1px 4px rgba(11, 6, 4, 0.9);
+    pointer-events: none;
+  }
+
+  /* accent rule that draws in left→right ahead of the words */
+  .stmt__message-bar {
+    display: block;
+    width: clamp(3rem, 11vw, 7.5rem);
+    height: 3px;
+    margin-bottom: clamp(0.7rem, 1.6vw, 1.15rem);
+    background: var(--color-vermilion);
+    box-shadow: 0 0 18px rgba(231, 63, 30, 0.6);
+    transform-origin: left center;
+  }
+
+  .stmt__word {
+    display: inline-block;
+    margin-right: 0.28em;
+  }
+
+  .stmt__word-in {
+    display: inline-block;
+    transform-origin: center center;
+    will-change: transform, opacity;
+  }
+
+  .stmt__word-in--hot {
+    color: var(--color-vermilion);
+    text-shadow:
+      0 0 26px rgba(231, 63, 30, 0.55),
+      0 2px 8px rgba(11, 6, 4, 0.85);
   }
 }
 

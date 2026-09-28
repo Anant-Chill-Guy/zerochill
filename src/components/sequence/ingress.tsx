@@ -6,34 +6,10 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 
 import { content } from "@/content/site";
-
-import ingressImage from "@/assets/bg-layer-2.png";
+import { BlackHoleHeroSection } from "@/components/black-hole-hero-section";
+import WebThreads from "@/components/WebThreads";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
-
-// tiles are [x y w h] in the svg viewbox and clipped out of one image
-const MOSAIC_TILES: ReadonlyArray<readonly [number, number, number, number]> = [
-  [200, 0, 108, 80],
-  [124, 92, 76, 112],
-  [212, 92, 108, 112],
-  [332, 114, 93, 68],
-  [437, 92, 115, 112],
-  [0, 216, 112, 112],
-  [124, 228, 52, 100],
-  [188, 216, 108, 112],
-  [308, 216, 110, 112],
-  [430, 216, 115, 112],
-  [124, 340, 112, 113],
-  [248, 340, 52, 48],
-  [312, 346, 44, 40],
-  [366, 340, 40, 48],
-  [248, 396, 52, 57],
-  [308, 396, 50, 57],
-  [366, 396, 40, 57],
-  [418, 363, 82, 75],
-  [512, 348, 77, 100],
-  [248, 461, 158, 42],
-];
 
 export function Ingress({ opened }: { opened: boolean }) {
   const root = useRef<HTMLElement | null>(null);
@@ -47,33 +23,51 @@ export function Ingress({ opened }: { opened: boolean }) {
       const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
       if (reduce) {
-        gsap.set([q(".ingress__media"), q(".ingress__copy > *"), q(".ingress__readout")], {
-          autoAlpha: 1,
-          yPercent: 0,
-          scale: 1,
-        });
+        gsap.set(
+          [
+            q(".ingress__eyebrow"),
+            q(".ingress__wm-item"),
+            q(".ingress__hero-copy > *"),
+            q(".ingress__readout"),
+          ],
+          { autoAlpha: 1, yPercent: 0, scale: 1 },
+        );
         return;
       }
 
       gsap
         .timeline({ defaults: { ease: "power3.out" } })
         .fromTo(
-          q(".ingress__media"),
-          { scale: 1.14, autoAlpha: 0 },
-          { scale: 1, autoAlpha: 1, duration: 1.6 },
+          q(".ingress__eyebrow"),
+          { yPercent: 120, autoAlpha: 0 },
+          { yPercent: 0, autoAlpha: 1, duration: 0.8 },
           0,
         )
+        // the wordmark builds letter by letter, the black-hole O drops in with them
         .fromTo(
-          q(".ingress__copy > *"),
-          { yPercent: 130, autoAlpha: 0 },
-          { yPercent: 0, autoAlpha: 1, duration: 1, stagger: 0.09 },
-          0.15,
+          q(".ingress__wm-item"),
+          { yPercent: 145, autoAlpha: 0, scale: 0.86 },
+          {
+            yPercent: 0,
+            autoAlpha: 1,
+            scale: 1,
+            duration: 1.1,
+            stagger: 0.09,
+            ease: "back.out(1.5)",
+          },
+          0.12,
+        )
+        .fromTo(
+          q(".ingress__hero-copy > *"),
+          { yPercent: 120, autoAlpha: 0 },
+          { yPercent: 0, autoAlpha: 1, duration: 0.9, stagger: 0.1 },
+          0.55,
         )
         .fromTo(
           q(".ingress__readout"),
           { autoAlpha: 0, y: 18 },
           { autoAlpha: 1, y: 0, duration: 0.7 },
-          0.6,
+          0.75,
         );
     },
     { scope: root, dependencies: [opened], revertOnUpdate: true },
@@ -96,8 +90,8 @@ export function Ingress({ opened }: { opened: boolean }) {
             scrub: true,
           },
         })
-        .to(q(".ingress__media"), { yPercent: 12 }, 0)
-        .to(q(".ingress__copy"), { yPercent: -16 }, 0)
+        .to(q(".ingress__wordmark"), { yPercent: -14, scale: 1.04 }, 0)
+        .to(q(".ingress__hero-copy"), { yPercent: 22, autoAlpha: 0.4 }, 0)
         .to(q(".ingress__readout"), { autoAlpha: 0 }, 0);
     },
     { scope: root },
@@ -106,39 +100,67 @@ export function Ingress({ opened }: { opened: boolean }) {
   return (
     <section ref={root} className="seq" aria-labelledby="ingress-headline">
       <div className="seq__stage">
-        <div className="seq__inner ingress__grid">
-          <div className="ingress__copy">
-            <span className="seq__eyebrow">{content.ingress.eyebrow}</span>
+        <div className="ingress__bg" aria-hidden="true">
+          <WebThreads
+            color1="#e73f1e"
+            color2="#f9b637"
+            color3="#ffdd9c"
+            speed={0.2}
+            threadCount={6}
+            frequency={5}
+            spread={0.18}
+            taper={1}
+            position={0.5}
+            fanMode="center"
+            glow={0.02}
+            falloff={0.6}
+            thickness={1.1}
+            brightness={0.6}
+            opacity={1}
+            mirror
+            shimmer={false}
+            grain
+            grainIntensity={0.05}
+            mouseInteraction
+            mouseStrength={0.3}
+          />
+        </div>
+
+        <div className="seq__inner ingress__hero">
+          <span className="seq__eyebrow ingress__eyebrow">
+            {content.ingress.eyebrow}
+          </span>
+
+          <div className="ingress__wordmark" aria-hidden="true">
+            <span className="ingress__wm-letter ingress__wm-item">V</span>
+            <span className="ingress__wm-hole ingress__wm-item">
+              <BlackHoleHeroSection
+                distance={10.5}
+                fov={46}
+                elevation={-6}
+                roll={-6}
+                focus={[0.5, 0.5]}
+                diskInner={3}
+                diskOuter={13}
+                diskThickness={0.3}
+                doppler={0.32}
+                brightness={1.1}
+                glow={1}
+                vignette={0.12}
+                resolution={0.66}
+                steps={260}
+                maxDpr={1.5}
+              />
+            </span>
+            <span className="ingress__wm-letter ingress__wm-item">I</span>
+            <span className="ingress__wm-letter ingress__wm-item">D</span>
+          </div>
+
+          <div className="ingress__hero-copy">
             <h2 id="ingress-headline" className="ingress__headline">
               {content.ingress.headline}
             </h2>
             <p className="ingress__sub">{content.ingress.sub}</p>
-          </div>
-
-          <div className="ingress__media">
-            <svg
-              className="ingress__mosaic"
-              viewBox="0 0 590 505"
-              role="img"
-              aria-label={content.ingress.mosaicAlt}
-            >
-              <defs>
-                <clipPath id="ingress-mosaic-clip">
-                  {MOSAIC_TILES.map(([x, y, w, h], i) => (
-                    <rect key={i} x={x} y={y} width={w} height={h} />
-                  ))}
-                </clipPath>
-              </defs>
-              <image
-                href={ingressImage.src}
-                x="0"
-                y="0"
-                width="590"
-                height="505"
-                preserveAspectRatio="xMidYMid slice"
-                clipPath="url(#ingress-mosaic-clip)"
-              />
-            </svg>
           </div>
         </div>
 

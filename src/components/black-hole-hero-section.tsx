@@ -468,7 +468,11 @@ void main() {
   float n = fract(sin(dot(gl_FragCoord.xy + uSeed, vec2(12.9898, 78.233))) * 43758.5453);
   c += (n - 0.5) / 255.0;
 
-  gl_FragColor = vec4(c, 1.0);
+  // Fade the frame to transparent in a disc so the hole reads as a clean round
+  // element with no box and no border. The shadow stays solid black because its
+  // colour is black at full alpha; only the edge of the frame melts away.
+  float a = 1.0 - smoothstep(0.42, 0.5, length(vUv - 0.5));
+  gl_FragColor = vec4(c * a, a);
 }
 `;
 
@@ -555,7 +559,7 @@ export function BlackHoleHeroSection({
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     const opts: WebGLContextAttributes = {
-      alpha: false,
+      alpha: true,
       antialias: false,
       depth: false,
       stencil: false,
@@ -994,7 +998,7 @@ export function BlackHoleHeroSection({
   return (
     <div
       ref={hostRef}
-      className={`relative isolate h-full w-full overflow-hidden bg-black ${className}`}
+      className={`relative isolate h-full w-full overflow-hidden ${className}`}
       {...rest}
     >
       <canvas ref={canvasRef} aria-hidden="true" className="absolute inset-0 h-full w-full" />
