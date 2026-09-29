@@ -59,7 +59,7 @@ export function SiteNav() {
         </nav>
 
         <div className="flex items-center gap-3">
-          <a href="#register" className="btn btn--ghost btn--sm hidden md:inline-flex">
+          <a href="https://void-ctf.ctfd.io/" className="btn btn--ghost btn--sm hidden md:inline-flex">
             Register
           </a>
           <button
@@ -92,7 +92,7 @@ export function SiteNav() {
               </a>
             ))}
             <a
-              href="#register"
+              href="https://void-ctf.ctfd.io/"
               className="btn btn--ghost btn--sm mt-3 self-start"
               onClick={() => setOpen(false)}
             >

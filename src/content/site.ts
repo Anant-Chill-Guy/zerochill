@@ -85,6 +85,6 @@ export const content = {
     disclaimer:
       "Every system in the range is synthetic. Nothing here touches a live utility.",
     legal: "Void Society",
-    cta: { label: "Register", href: "#register" },
+    cta: { label: "Register", href: "https://void-ctf.ctfd.io/" },
   },
 } as const;
