@@ -14,6 +14,15 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 const HOLD_VH = 260;
 
+// beat on the timeline where the circle starts opening; the plate pan rides it
+const OPEN_AT = 0.32;
+
+// object-position X of the plant plate across the hold. The "CTF challenge"
+// board sits on the left of the frame and the plant on the right, so the
+// reveal travels left → right while the message lands.
+const PAN_FROM = 15;
+const PAN_TO = 55;
+
 // overlay narration revealed word-by-word once the plant window is open
 const MESSAGE =
   "As a Mossad operative, you seem pretty thirsty for action. Looks like war is waiting for you. Best of luck, soldier.";
@@ -49,9 +58,10 @@ export function Statement() {
       const veil = q(".stmt__veil")[0] as HTMLElement;
       const message = q(".stmt__message")[0] as HTMLElement;
       const bar = q(".stmt__message-bar")[0] as HTMLElement;
+      const media = q(".stmt__circle-media")[0] as HTMLElement;
       const words = q(".stmt__word-in") as HTMLElement[];
 
-      if (!stage || !slot || !window_ || lines.length === 0) return;
+      if (!stage || !slot || !window_ || !media || lines.length === 0) return;
 
       // static fallback for reduced motion
       const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -140,7 +150,7 @@ export function Statement() {
             );
           },
         },
-        0.32,
+        OPEN_AT,
       );
 
       tl.to(veil, { autoAlpha: 1, duration: 0.18 }, 0.44);
@@ -172,6 +182,24 @@ export function Statement() {
           stagger: 0.04,
         },
         0.62,
+      );
+
+      // The plate travels left → right from the beat the circle opens, so the
+      // frame is still moving while the message lands. object-position (not a
+      // transform) keeps the pan inside the cover crop, so no edge is exposed.
+      const pan = { v: 0 };
+      tl.to(
+        pan,
+        {
+          v: 1,
+          duration: tl.duration() - OPEN_AT,
+          onUpdate: () => {
+            media.style.objectPosition = `${
+              PAN_FROM + (PAN_TO - PAN_FROM) * pan.v
+            }% 50%`;
+          },
+        },
+        OPEN_AT,
       );
     },
     { scope: root },
