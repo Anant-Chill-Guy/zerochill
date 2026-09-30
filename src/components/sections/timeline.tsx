@@ -1,11 +1,31 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, type CSSProperties } from "react";
+import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 
 gsap.registerPlugin(ScrollTrigger);
+
+// Portrait art is shared by both stages: it is the same card at the same
+// shape, so the two mobile cards come out one size and neither reads as a
+// narrower strip than the other.
+const PORTRAIT = { src: "/media/stage-card-tall.webp", w: 1200, h: 1853 };
+
+// Each stage carries its own pair, in the dimensions of the file: the art owns
+// its frame and its own ratio, so the card takes the box straight from the
+// image and never crops.
+const ART = {
+  qualifier: {
+    wide: { src: "/media/stage-card-wide-qualifier.webp", w: 1082, h: 633 },
+    tall: PORTRAIT,
+  },
+  finals: {
+    wide: { src: "/media/stage-card-wide.webp", w: 1500, h: 1086 },
+    tall: PORTRAIT,
+  },
+};
 
 const STAGES = [
   {
@@ -13,50 +33,14 @@ const STAGES = [
     title: "Qualifiers",
     desc: "Compete in a 24-hour jeopardy-style CTF. The top 15 teams move on to the finals.",
     meta: "Online · 24 h",
+    art: ART.qualifier,
   },
   {
     n: "02",
     title: "Finals",
     desc: "Attack and attempt to infiltrate the physical network set up by the organising team.",
     meta: "Offline · 24 h",
-  },
-];
-
-const DATES = [
-  {
-    day: "24",
-    mon: "Oct",
-    time: "00:00",
-    label: "Online CTF begins",
-    phase: "Qualifiers",
-  },
-  {
-    day: "24",
-    mon: "Oct",
-    time: "23:59",
-    label: "Online CTF ends",
-    phase: "Qualifiers",
-  },
-  {
-    day: "27",
-    mon: "Oct",
-    time: "09:00",
-    label: "Leaderboard finalised",
-    phase: "Qualifiers",
-  },
-  {
-    day: "29",
-    mon: "Nov",
-    time: "10:00",
-    label: "Offline CTF begins",
-    phase: "Finals",
-  },
-  {
-    day: "30",
-    mon: "Nov",
-    time: "10:00",
-    label: "Offline CTF ends",
-    phase: "Finals",
+    art: ART.finals,
   },
 ];
 
@@ -67,7 +51,6 @@ export function Timeline() {
     () => {
       const mm = gsap.matchMedia();
       mm.add("(prefers-reduced-motion: no-preference)", () => {
-        // reveal each group on scroll
         gsap.from(".tl-head > *", {
           autoAlpha: 0,
           y: 20,
@@ -76,21 +59,16 @@ export function Timeline() {
           ease: "power3.out",
           scrollTrigger: { trigger: ".tl-head", start: "top 80%" },
         });
-        gsap.from(".tl-stage", {
+        gsap.from(".tl-card", {
           autoAlpha: 0,
-          y: 18,
-          duration: 0.6,
-          stagger: 0.08,
+          y: 26,
+          duration: 0.75,
+          stagger: 0.12,
           ease: "power3.out",
+          // drop the inline transform once it lands, otherwise it outranks the
+          // hover lift in the stylesheet
+          clearProps: "transform",
           scrollTrigger: { trigger: ".tl-stages", start: "top 84%" },
-        });
-        gsap.from(".tl-date", {
-          autoAlpha: 0,
-          y: 12,
-          duration: 0.5,
-          stagger: 0.06,
-          ease: "power3.out",
-          scrollTrigger: { trigger: ".tl-dates", start: "top 88%" },
         });
       });
       return () => mm.revert();
@@ -111,31 +89,48 @@ export function Timeline() {
 
         <ol className="tl-stages">
           {STAGES.map((s) => (
-            <li key={s.n} className="tl-stage">
-              <span className="tl-stage__idx">{s.n}</span>
-              <h3 className="tl-stage__title">{s.title}</h3>
-              <p className="tl-stage__desc">{s.desc}</p>
-              <span className="tl-stage__meta">{s.meta}</span>
-            </li>
-          ))}
-        </ol>
-
-        <h3 className="tl-sub">Timeline</h3>
-        <p className="tl-note">All times IST · 2026</p>
-
-        <ol className="tl-dates">
-          {DATES.map((d) => (
             <li
-              key={`${d.day}-${d.mon}-${d.time}`}
-              className="tl-date"
+              key={s.n}
+              className="tl-card"
+              // the portrait art's ratio, so the mobile card can be sized
+              // against a height budget instead of a shared width
+              style={{ "--tl-ratio": s.art.tall.w / s.art.tall.h } as CSSProperties}
             >
-              <span className="tl-date__stamp">
-                <span className="tl-date__day">{d.day}</span>
-                <span className="tl-date__mon">{d.mon}</span>
-              </span>
-              <span className="tl-date__time">{d.time}</span>
-              <span className="tl-date__label">{d.label}</span>
-              <span className="tl-date__phase">{d.phase}</span>
+              <div className="tl-card__art">
+                {/* Both orientations are in the DOM; the inactive one is
+                    display:none, which keeps its lazy load from ever firing. */}
+                <Image
+                  className="tl-card__img tl-card__img--wide"
+                  src={s.art.wide.src}
+                  width={s.art.wide.w}
+                  height={s.art.wide.h}
+                  alt=""
+                  loading="lazy"
+                  sizes="(max-width: 999px) 0px, (min-width: 1520px) 652px, 45vw"
+                />
+                <Image
+                  className="tl-card__img tl-card__img--tall"
+                  src={s.art.tall.src}
+                  width={s.art.tall.w}
+                  height={s.art.tall.h}
+                  alt=""
+                  loading="lazy"
+                  // the card fills the column on a phone; the height budget
+                  // may pull it in on a short or very tall viewport
+                  sizes="(max-width: 999px) 92vw, 0px"
+                />
+              </div>
+
+              <div className="tl-card__panel">
+                <div className="tl-card__row">
+                  <h3 className="tl-card__title">{s.title}</h3>
+                  <p className="tl-card__meta">
+                    <span className="tl-card__idx">{s.n}</span>
+                    <span>{s.meta}</span>
+                  </p>
+                </div>
+                <p className="tl-card__desc">{s.desc}</p>
+              </div>
             </li>
           ))}
         </ol>

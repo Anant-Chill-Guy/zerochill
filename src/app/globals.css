@@ -19,13 +19,25 @@
 
   --font-display: var(--font-archivo-black), "Arial Black", sans-serif;
   --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
-  --font-brand: var(--font-croissant), Georgia, "Times New Roman", serif;
+  --font-brand: var(--font-lora), Georgia, "Times New Roman", serif;
 }
 
 @layer base {
   :root {
     --rule: rgba(255, 246, 230, 0.12);
     --rule-strong: rgba(255, 246, 230, 0.24);
+
+    /* Hero type: the wordmark, the CTF superscript and the sub-line all ride
+       these, so a palette swap recolours the lockup without touching the
+       component. Bone on both dark palettes; the light palette declared at the
+       end of this file flips them to near-black. */
+    --hero-ink: var(--color-bone);
+    --hero-ink-muted: color-mix(in srgb, var(--hero-ink) 84%, transparent);
+    /* the lockup sits on photography, so the type carries a shadow to stay
+       legible. It has to invert with the ink, or black type would end up
+       sitting in a dark halo. */
+    --hero-ink-shadow: 0 0.015em 0.13em rgb(11 6 4 / 0.6);
+    --hero-sub-shadow: 0 1px 14px rgb(11 6 4 / 0.8);
   }
 
   html {
@@ -106,6 +118,11 @@
   }
 
   .nav-brand {
+    display: inline-flex;
+    align-items: center;
+    /* the lockup is VOID + mark + SOCIETY. JSX drops the newline whitespace
+       between them, so this gap is the whole of the spacing. */
+    gap: 0.34em;
     font-family: var(--font-brand);
     font-size: clamp(1.05rem, 2.4vw, 1.35rem);
     font-weight: 700;
@@ -122,11 +139,11 @@
   }
 
   .nav-brand__logo {
-    display: inline-block;
-    height: 1.6em;
+    display: block;
+    /* sized off the type so the badge reads as part of the wordmark rather
+       than a larger object the words hang off */
+    height: 1.55em;
     width: auto;
-    vertical-align: middle;
-    margin: 0 0.4em;
   }
 
   .nav-brand-link:hover .nav-brand,
@@ -727,6 +744,12 @@
   }
 }
 
+/* how it works: the two stages, each an artwork with its type inside it. The
+   art owns its frame and its ratio and is never cropped, so the box comes from
+   the image's own dimensions rather than a declared aspect-ratio, and the two
+   stages can differ in shape. The type is anchored to the bottom of the art,
+   which lands it in the blank plate on the finals card and over the terrain on
+   the qualifier card, so it carries a scrim to stay legible on both. */
 @layer components {
   .tl-section {
     position: relative;
@@ -738,9 +761,9 @@
 
   .tl-inner {
     width: 100%;
-    max-width: 1180px;
+    max-width: 1440px;
     margin-inline: auto;
-    padding-inline: 1.5rem;
+    padding-inline: clamp(1.25rem, 4vw, 2.5rem);
   }
 
   .tl-head {
@@ -770,150 +793,138 @@
     margin: clamp(3rem, 7vh, 5rem) 0 0;
     padding: 0;
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: clamp(1.25rem, 3vw, 2.5rem);
+    grid-template-columns: minmax(0, 1fr);
+    gap: clamp(2rem, 4.5vw, 3.5rem);
   }
 
-  .tl-stage {
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--rule-strong);
+  /* Portrait art below 1000px, landscape above it. The two portrait arts are
+     not the same shape — the qualifier is 2.37x tall, the finals 1.54x — so a
+     single width would leave the finals card at half the height of the
+     qualifier. The card is sized off the art's own ratio against a viewport
+     height budget instead: both stages land near 62vh tall, and the width
+     still caps at the column, so the finals card fills a phone. The rem floor
+     stops a short (landscape) viewport from collapsing the card. */
+  .tl-card {
+    /* the panel is absolutely positioned, so the card has to be its containing
+       block in every state. It is not: the reveal tween's inline transform is
+       cleared once it lands, and the hover lift is a transform too, so the
+       panel would otherwise anchor to the section and jump on hover. */
+    position: relative;
+    width: 100%;
+    max-width: min(100%, max(14rem, calc(62vh * var(--tl-ratio, 0.65))));
+    margin-inline: auto;
+    transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
   }
 
-  .tl-stage__idx {
+  .tl-card__art {
+    position: relative;
+  }
+
+  .tl-card__img {
     display: block;
-    font-family: var(--font-display);
-    font-size: 0.95rem;
-    line-height: 1;
-    letter-spacing: 0.02em;
-    color: var(--color-vermilion);
+    width: 100%;
+    height: auto;
   }
 
-  .tl-stage__title {
-    margin-top: 0.7rem;
+  /* only one orientation is ever painted, and the hidden one is display:none
+     so its lazy load never fires */
+  .tl-card__img--wide {
+    display: none;
+  }
+
+  /* the art is a lit scene end to end, so the type needs something to sit on.
+     The scrim fades in from the bottom third and never touches the top of the
+     frame. */
+  .tl-card__art::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 42%;
+    background: linear-gradient(
+      to top,
+      rgb(11 6 4 / 0.94) 0%,
+      rgb(11 6 4 / 0.72) 45%,
+      rgb(11 6 4 / 0) 100%
+    );
+    pointer-events: none;
+  }
+
+  .tl-card__panel {
+    position: absolute;
+    left: 7%;
+    right: 7%;
+    bottom: 7%;
+    z-index: 1;
+  }
+
+  /* title and dateline share a line where there is room and wrap to two lines
+     where there is not */
+  .tl-card__row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    column-gap: 1.25rem;
+    row-gap: 0.35rem;
+  }
+
+  .tl-card__title {
     font-family: var(--font-display);
-    font-size: clamp(1.4rem, 2.4vw, 2rem);
+    font-size: clamp(1.05rem, 1.6vw, 1.35rem);
     line-height: 1.05;
-    letter-spacing: -0.015em;
-    color: var(--color-bone);
-  }
-
-  .tl-stage__desc {
-    margin-top: 0.7rem;
-    max-width: 44ch;
-    font-size: clamp(0.85rem, 1vw, 0.95rem);
-    line-height: 1.7;
-    color: var(--color-ink-400);
-  }
-
-  .tl-stage__meta {
-    display: block;
-    margin-top: 1.2rem;
-    font-size: 0.625rem;
-    letter-spacing: 0.24em;
-    text-transform: uppercase;
-    color: var(--color-ink-400);
-  }
-
-  .tl-sub {
-    margin-top: clamp(3rem, 8vh, 5.5rem);
-    font-family: var(--font-display);
-    font-size: clamp(1.2rem, 1.8vw, 1.5rem);
-    line-height: 1;
     letter-spacing: -0.01em;
     color: var(--color-bone);
   }
 
-  .tl-note {
-    margin-top: 0.75rem;
-    font-size: 0.625rem;
-    letter-spacing: 0.24em;
-    text-transform: uppercase;
-    color: var(--color-ink-400);
-  }
-
-  .tl-dates {
-    margin: 1.5rem 0 0;
-    padding: 0;
-    list-style: none;
-    border-top: 1px solid var(--rule-strong);
-  }
-
-  .tl-date {
-    display: grid;
-    grid-template-columns: 3.5rem 4.25rem minmax(0, 1fr) auto;
+  .tl-card__meta {
+    margin-left: auto;
+    display: flex;
     align-items: baseline;
-    gap: 0 clamp(0.9rem, 1.8vw, 1.75rem);
-    padding: clamp(0.9rem, 1.6vw, 1.15rem) 0;
-  }
-
-  .tl-date + .tl-date {
-    border-top: 1px solid var(--rule);
-  }
-
-  .tl-date__stamp {
-    display: inline-flex;
-    align-items: baseline;
-    gap: 0.35rem;
-  }
-
-  .tl-date__day {
-    font-family: var(--font-display);
-    font-size: clamp(1.15rem, 1.8vw, 1.45rem);
-    line-height: 1;
-    color: var(--color-bone);
-    transition: color 0.2s ease;
-  }
-
-  .tl-date:hover .tl-date__day {
-    color: var(--color-tangerine);
-  }
-
-  .tl-date__mon {
-    font-size: 0.625rem;
-    letter-spacing: 0.24em;
+    gap: 0.6rem;
+    font-size: 0.72rem;
+    line-height: 1.2;
+    letter-spacing: 0.2em;
     text-transform: uppercase;
-    color: var(--color-ink-400);
-  }
-
-  .tl-date__time {
-    font-size: 0.8125rem;
-    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
     color: var(--color-cream);
   }
 
-  .tl-date__label {
-    font-size: clamp(0.9rem, 1.05vw, 1rem);
-    line-height: 1.6;
+  .tl-card__idx {
+    font-family: var(--font-display);
+    letter-spacing: 0.02em;
+    color: var(--color-vermilion);
+  }
+
+  .tl-card__desc {
+    margin-top: 0.55rem;
+    font-size: clamp(0.82rem, 0.98vw, 0.92rem);
+    line-height: 1.7;
     color: var(--color-ink-300);
   }
 
-  .tl-date__phase {
-    font-size: 0.625rem;
-    letter-spacing: 0.24em;
-    text-transform: uppercase;
-    color: var(--color-ink-400);
-    white-space: nowrap;
+  .tl-card:hover {
+    transform: translateY(-4px);
   }
 
-  @media (max-width: 860px) {
+  @media (min-width: 1000px) {
+    /* one row: the two stages read as a pair, and the section stops being
+       two full-width cards tall */
     .tl-stages {
-      grid-template-columns: minmax(0, 1fr);
-      gap: 2rem;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
-  }
 
-  @media (max-width: 720px) {
-    .tl-date {
-      grid-template-columns: auto auto minmax(0, 1fr);
-      row-gap: 0.45rem;
+    .tl-card {
+      max-width: none;
+      margin-inline: 0;
     }
-    .tl-date__stamp { grid-area: 1 / 1; }
-    .tl-date__time { grid-area: 1 / 2; }
-    .tl-date__phase {
-      grid-area: 1 / 3;
-      justify-self: end;
+
+    .tl-card__img--wide {
+      display: block;
     }
-    .tl-date__label { grid-area: 2 / 1 / 3 / -1; }
+
+    .tl-card__img--tall {
+      display: none;
+    }
   }
 
   @media (max-width: 560px) {
@@ -925,8 +936,6 @@
 
 @layer base {
   :root {
-    --tear-upper: polygon(0% 0%, 100% 0%, 100% 48.81%, 98.21% 48.15%, 96.43% 48.26%, 94.64% 48.56%, 92.86% 49.26%, 91.07% 49.86%, 89.29% 49.96%, 87.5% 51.09%, 85.71% 51.43%, 83.93% 51.15%, 82.14% 50.55%, 80.36% 50.59%, 78.57% 50.81%, 76.79% 50.84%, 75% 50.63%, 73.21% 51.42%, 71.43% 52.06%, 69.64% 52.55%, 67.86% 51.51%, 66.07% 50.89%, 64.29% 51.26%, 62.5% 50.12%, 60.71% 49.61%, 58.93% 49.17%, 57.14% 49.6%, 55.36% 50.31%, 53.57% 49.82%, 51.79% 49.45%, 50% 49.58%, 48.21% 49.52%, 46.43% 48.52%, 44.64% 47.7%, 42.86% 47.69%, 41.07% 48.49%, 39.29% 48.28%, 37.5% 48.3%, 35.71% 49.48%, 33.93% 49.88%, 32.14% 50.07%, 30.36% 48.94%, 28.57% 48.96%, 26.79% 49.65%, 25% 49.18%, 23.21% 49.57%, 21.43% 49.91%, 19.64% 51.37%, 17.86% 51.95%, 16.07% 51.87%, 14.29% 51.77%, 12.5% 52.02%, 10.71% 51.69%, 8.93% 50.6%, 7.14% 50.48%, 5.36% 51%, 3.57% 51.57%, 1.79% 51.05%, 0% 51.43%);
-    --tear-lower: polygon(0% 51.43%, 1.79% 51.05%, 3.57% 51.57%, 5.36% 51%, 7.14% 50.48%, 8.93% 50.6%, 10.71% 51.69%, 12.5% 52.02%, 14.29% 51.77%, 16.07% 51.87%, 17.86% 51.95%, 19.64% 51.37%, 21.43% 49.91%, 23.21% 49.57%, 25% 49.18%, 26.79% 49.65%, 28.57% 48.96%, 30.36% 48.94%, 32.14% 50.07%, 33.93% 49.88%, 35.71% 49.48%, 37.5% 48.3%, 39.29% 48.28%, 41.07% 48.49%, 42.86% 47.69%, 44.64% 47.7%, 46.43% 48.52%, 48.21% 49.52%, 50% 49.58%, 51.79% 49.45%, 53.57% 49.82%, 55.36% 50.31%, 57.14% 49.6%, 58.93% 49.17%, 60.71% 49.61%, 62.5% 50.12%, 64.29% 51.26%, 66.07% 50.89%, 67.86% 51.51%, 69.64% 52.55%, 71.43% 52.06%, 73.21% 51.42%, 75% 50.63%, 76.79% 50.84%, 78.57% 50.81%, 80.36% 50.59%, 82.14% 50.55%, 83.93% 51.15%, 85.71% 51.43%, 87.5% 51.09%, 89.29% 49.96%, 91.07% 49.86%, 92.86% 49.26%, 94.64% 48.56%, 96.43% 48.26%, 98.21% 48.15%, 100% 48.81%, 100% 100%, 0% 100%);
     /* Same seam, compressed to a thin band at the top of the box. The halves
        above tear across the middle of the viewport; the footer sheet is a
        different height, so it carries its own edge rather than reusing the
@@ -935,77 +944,37 @@
   }
 }
 
-/* preloader */
+/* preloader: the facility constructing itself as a white wireframe on pure
+   black, played as video. The clip supplies all the motion, so the loader only
+   has to hold the frame, then push in and dissolve into the site. */
 @layer components {
   .pre {
     position: fixed;
     inset: 0;
     z-index: 60;
-    background: var(--color-iron-950);
-  }
-
-  .pre__half {
-    position: absolute;
-    inset: 0;
     display: grid;
     place-items: center;
-    background: linear-gradient(
-      174deg,
-      var(--color-bone) 0%,
-      var(--color-cream) 58%,
-      var(--color-bone) 100%
-    );
     overflow: hidden;
+    /* true black, matching the clip, so the letterbox either side of the 16:9
+       plate is seamless against the artwork */
+    background: #000;
   }
 
-  .pre__half--up {
-    clip-path: var(--tear-upper);
-    filter: drop-shadow(0 1.5px 0 rgba(255, 246, 230, 0.5));
-  }
-
-  .pre__half--down {
-    clip-path: var(--tear-lower);
-    filter: drop-shadow(0 -1.5px 0 rgba(255, 246, 230, 0.5));
-  }
-
-  .pre__print {
-    grid-area: 1 / 1;
-    display: flex;
-    align-items: baseline;
-    gap: 0.06em;
-    font-family: var(--font-display);
-    font-size: clamp(3rem, 17vw, 13rem);
-    line-height: 1;
-    letter-spacing: -0.03em;
-    color: var(--color-iron-950);
-    user-select: none;
-  }
-
-  .pre__word {
-    display: inline-block;
-    white-space: nowrap;
-  }
-
-  .pre__ch {
-    display: inline-block;
-    transform-origin: 50% 100%;
+  .pre__plate {
+    position: relative;
+    /* the clip is 16:9; matching the plate to that ratio keeps the entire
+       facility in frame at any viewport, and the surround reads as void */
+    width: min(100vw, calc(100svh * 16 / 9));
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
     will-change: transform;
   }
 
-  .pre__print-second {
-    color: var(--color-vermilion);
-  }
-
-  .pre__status {
-    position: absolute;
-    left: 50%;
-    bottom: 12%;
-    transform: translateX(-50%);
-    font-family: var(--font-mono);
-    font-size: 0.6875rem;
-    letter-spacing: 0.34em;
-    text-transform: uppercase;
-    color: color-mix(in srgb, var(--color-iron-600) 85%, transparent);
+  .pre__video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
 }
 
@@ -1023,9 +992,12 @@
     overflow: hidden;
   }
 
+  /* No z-index: it would make this a stacking context, and therefore an
+     isolated group, which cuts the wordmark's difference blend off from the
+     slides in .ingress__bg. Paint order is unchanged — .ingress__bg carries
+     z-index: 0 and this comes later in the DOM, so it still sits on top. */
   .seq__inner {
     position: relative;
-    z-index: 2;
     height: 100%;
     width: 100%;
     max-width: 1440px;
@@ -1046,7 +1018,14 @@
 @layer components {
   .ingress__bg {
     position: absolute;
-    inset: 0;
+    left: 0;
+    right: 0;
+    /* the band bleeds the full width but holds an 80px margin off the top and
+       bottom edges, so a strip of stage shows above and below it. The frames
+       are 16:9 and object-cover crops them to whatever the band's ratio turns
+       out to be. */
+    top: 80px;
+    bottom: 80px;
     z-index: 0;
     pointer-events: none;
   }
@@ -1061,7 +1040,6 @@
       left: 50%;
       right: auto;
       width: max(100%, 88svh);
-      height: 100%;
       transform: translateX(-50%);
     }
   }
@@ -1070,7 +1048,10 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    /* the lockup rides the top of the stage rather than sitting centred; the
+       top pad clears the absolutely-positioned nav (py-4 + a ~52px mark) */
+    justify-content: flex-start;
+    padding-top: clamp(5.5rem, 11vh, 7rem);
     gap: clamp(0.75rem, 2.4vw, 1.6rem);
     text-align: center;
   }
@@ -1079,6 +1060,24 @@
     will-change: transform, opacity;
   }
 
+  /* VOID carries CTF as a superscribed designation. Only the wordmark stays in
+     flow, so the mark itself centres on the stage; CTF is positioned against
+     its right edge instead of being a flex sibling, which would drag VOID off
+     centre and leave the tag stranded in open space. The two drift together on
+     scroll, so they have to share this wrapper. */
+  .ingress__lockup {
+    position: relative;
+    /* the scroll parallax drives this: a relative offset keeps the wrapper out
+       of the stacking-context business, unlike the transform it replaced.
+       Declared so the tween has a px start value rather than `auto`. */
+    top: 0;
+    display: flex;
+    justify-content: center;
+  }
+
+  /* No will-change here: the tween drives the letters, not the wordmark, so it
+     was only ever a hint — and a transform hint makes this an isolated group,
+     which would stop the letters blending with the slides behind them. */
   .ingress__wordmark {
     display: flex;
     align-items: center;
@@ -1089,7 +1088,6 @@
     line-height: 0.86;
     letter-spacing: -0.03em;
     text-transform: uppercase;
-    will-change: transform, opacity;
   }
 
   .ingress__wm-item {
@@ -1097,16 +1095,31 @@
     will-change: transform, opacity;
   }
 
+  /* the letters invert the slides rather than sit on them: difference against
+     white is a true negative, so each glyph lands near-black over the sunlit
+     frames and near-white over the shaded ones. That is also why the ink
+     shadow is gone — a negative carries its own contrast, and a shadow would
+     only smear the edge it is supposed to protect.
+     Lands on the frame painted by .ingress__bg, which is why nothing between
+     here and .seq__stage may create a stacking context. */
   .ingress__wm-letter {
-    color: var(--color-bone);
+    color: #ffffff;
+    mix-blend-mode: difference;
   }
 
   /* the O slot: the black hole renders as its full round element. The disc
-     fade is baked into the shader, so no mask, box or border here. */
+     fade is baked into the shader, so no mask, box or border here.
+     Sized to the cap band, not to the em: at 1.05em the element was 202px
+     against a 133px cap height, so it read as a ball dropped into the word
+     rather than the round letter of VOID. A round glyph wants a hair of
+     overshoot beyond the cap, which 0.8em gives once the shader's fade is
+     accounted for. `top` then drops it back onto the cap centre, since a
+     flex-centred circle sits high against a baseline-set line box. */
   .ingress__wm-hole {
     position: relative;
-    width: 1.05em;
-    height: 1.05em;
+    top: 0.03em;
+    width: 0.8em;
+    height: 0.8em;
   }
 
   .ingress__hero-copy {
@@ -1116,20 +1129,37 @@
     gap: 0.75rem;
   }
 
+  /* the superscribed designation. Mono against the display grotesque, so it
+     reads as a spec label rather than part of the name, and rhymes with the
+     mono labels in the readout below. Absolutely placed off the wordmark's
+     right edge so the mark itself stays centred.
+     margin-top is the optical dial: it seats CTF's cap line against VOID's. */
   .ingress__headline {
-    margin: 0;
-    font-family: var(--font-display);
-    font-size: clamp(1.6rem, 3.6vw, 2.9rem);
+    position: absolute;
+    left: 100%;
+    top: 0;
+    margin: clamp(0.5rem, 1.1vw, 1rem) 0 0 clamp(0.45rem, 0.9vw, 0.85rem);
+    font-family: var(--font-mono);
+    font-size: clamp(0.7rem, 1.7vw, 1.3rem);
+    font-weight: 600;
     line-height: 1;
-    letter-spacing: -0.025em;
-    color: var(--color-bone);
-    max-width: 20ch;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    /* rides the same difference blend as the letters, so the designation reads
+       against the field instead of disappearing into it */
+    color: #ffffff;
+    mix-blend-mode: difference;
+    white-space: nowrap;
   }
 
   .ingress__sub {
     margin: 0;
     font-size: clamp(0.9rem, 1.15vw, 1.05rem);
-    color: var(--color-ink-300);
+    /* ink-300 sits too close in value to the sunlit aerial frames to read.
+       Mixed rather than faded via opacity, because GSAP's autoAlpha drives
+       opacity on this element and would overwrite it. */
+    color: var(--hero-ink-muted);
+    text-shadow: var(--hero-sub-shadow);
     max-width: 46ch;
   }
 
@@ -1143,6 +1173,18 @@
     gap: 1.25rem;
     padding-top: 1.25rem;
     border-top: 1px solid var(--rule);
+  }
+
+  /* the readout sits on its own solid band (matching the next section's bg)
+     rather than floating over the plant slides — the band bleeds to the stage
+     edges and down to the bottom so the imagery stops above it */
+  .ingress__readout::before {
+    content: "";
+    position: absolute;
+    inset: -1px calc(-1 * clamp(1.25rem, 4vw, 2.5rem)) calc(-1 * clamp(1.5rem, 4vw, 2.75rem));
+    z-index: -1;
+    background: var(--color-iron-950);
+    pointer-events: none;
   }
 
   .ingress__cell-label {
@@ -1185,7 +1227,7 @@
       font-size: clamp(2.4rem, 22vh, 6rem);
     }
     .ingress__headline {
-      font-size: clamp(1.15rem, 5.5vh, 1.9rem);
+      font-size: clamp(0.6rem, 3.4vh, 1rem);
     }
     .ingress__sub {
       font-size: 0.85rem;
@@ -1725,6 +1767,19 @@ html[data-theme="deep"] {
   --color-rose: #6eacda;
   --rule: rgba(226, 226, 182, 0.14);
   --rule-strong: rgba(226, 226, 182, 0.26);
+}
+
+/* ---- light palette hook ----
+   Nothing sets data-theme="light" yet. These are declared up front so that the
+   moment a light page background ships, the hero lockup flips to near-black
+   with no edits to the component or the ingress rules.
+   Do NOT enable the attribute before that background exists: the hero would go
+   black against a still-dark page. Note the nav, readout and the sections below
+   the fold are not covered by this hook and will need their own light values. */
+html[data-theme="light"] {
+  --hero-ink: #0b0604;
+  --hero-ink-shadow: 0 0.015em 0.13em rgb(255 255 255 / 0.7);
+  --hero-sub-shadow: 0 1px 14px rgb(255 255 255 / 0.85);
 }
 
 html[data-theme="deep"] .nav-shell {

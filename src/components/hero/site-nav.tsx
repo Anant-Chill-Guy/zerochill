@@ -35,16 +35,17 @@ export function SiteNav() {
   return (
     <header ref={root} className="nav-shell absolute inset-x-0 top-0 z-40">
       <div className="mx-auto flex w-full max-w-[1440px] items-center justify-between gap-6 px-6 py-4 lg:px-10">
-        <a href="#" className="nav-brand-link">
+        <a href="#" className="nav-brand-link" aria-label="Void Society - home">
           <span className="nav-brand">
             VOID
             <Image
               className="nav-brand__logo"
-              src="/media/logo-for-nav.png"
+              src="/media/logo.png"
               alt=""
               aria-hidden="true"
-              width={128}
-              height={128}
+              width={256}
+              height={256}
+              priority
             />
             <span className="nav-brand__mark">SOCIETY</span>
           </span>

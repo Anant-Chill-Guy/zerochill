@@ -17,10 +17,10 @@ export function SiteFooter() {
               <p className="ft__disclaimer">{content.footer.disclaimer}</p>
               <Image
                 className="ft__logo"
-                src="/media/logo-for-nav.png"
+                src="/media/logo.png"
                 alt="Void Society"
-                width={128}
-                height={128}
+                width={256}
+                height={256}
               />
             </div>
 

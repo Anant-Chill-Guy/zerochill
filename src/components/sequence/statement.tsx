@@ -54,7 +54,6 @@ export function Statement() {
       const inners = q(".stmt__line-inner") as HTMLElement[];
       const slot = q(".stmt__slot")[0] as HTMLElement;
       const window_ = q(".stmt__circle")[0] as HTMLElement;
-      const caption = q(".stmt__caption")[0] as HTMLElement;
       const veil = q(".stmt__veil")[0] as HTMLElement;
       const message = q(".stmt__message")[0] as HTMLElement;
       const bar = q(".stmt__message-bar")[0] as HTMLElement;
@@ -92,7 +91,7 @@ export function Statement() {
       if (reduce) {
         park();
         gsap.set(inners, { yPercent: 0, autoAlpha: 1 });
-        gsap.set([caption, veil, window_, message], { autoAlpha: 1 });
+        gsap.set([veil, window_, message], { autoAlpha: 1 });
         gsap.set(words, { autoAlpha: 1, scale: 1 });
         gsap.set(bar, { autoAlpha: 1, scaleX: 1 });
         lines.forEach((l) => l.classList.add("is-lit"));
@@ -101,7 +100,7 @@ export function Statement() {
 
       park();
       gsap.set(inners, { yPercent: 112 });
-      gsap.set([caption, veil, window_, message], { autoAlpha: 0 });
+      gsap.set([veil, window_, message], { autoAlpha: 0 });
       // words shrunk to a point; they pop out one after another on scroll
       gsap.set(words, { autoAlpha: 0, scale: 0.4 });
       gsap.set(bar, { autoAlpha: 0, scaleX: 0.6 });
@@ -156,7 +155,6 @@ export function Statement() {
       tl.to(veil, { autoAlpha: 1, duration: 0.18 }, 0.44);
       // clear the statement lines so the plant reads clean under the bubble
       tl.to(inners, { autoAlpha: 0, duration: 0.1 }, 0.5);
-      tl.to(caption, { autoAlpha: 1, duration: 0.06 }, 0.58);
 
       // kinetic type: accent rule pops in, then each word pops out like a
       // bubble, one after another as you keep scrolling
@@ -229,7 +227,6 @@ export function Statement() {
     <section ref={root} className="seq" aria-labelledby="stmt-heading">
       <div className="seq__stage">
         <div className="seq__inner flex flex-col justify-center">
-          <span className="seq__eyebrow">{content.statement.eyebrow}</span>
           <h2 id="stmt-heading" className="stmt__lines mt-6">
             {content.statement.lines.map(renderLine)}
           </h2>
@@ -263,8 +260,6 @@ export function Statement() {
             </span>
           ))}
         </p>
-
-        <span className="stmt__caption">{content.statement.circleCaption}</span>
       </div>
     </section>
   );

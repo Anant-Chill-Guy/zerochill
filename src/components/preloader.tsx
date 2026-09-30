@@ -8,6 +8,21 @@ import { content } from "@/content/site";
 
 gsap.registerPlugin(useGSAP);
 
+const VIDEO = "/media/preloader-facility.mp4";
+
+// The clip is 10s of construction. Run it a little hot rather than trimming it,
+// so the whole build still plays and only the pacing changes. 1 = original.
+const SPEED = 1.35;
+
+// No poster on purpose. The still we have is the fully assembled facility,
+// while the clip opens on empty black, so using it as a poster would flash
+// bright-then-black on every load. The container is already pure black, so
+// leaving it bare is seamless.
+
+// a clip that stalls, is refused, or gets blocked from autoplay must not strand
+// the visitor behind the loader. Sits just past the clip's own 10s runtime.
+const STALL_TIMEOUT_MS = 13000;
+
 export function Preloader({
   onOpen,
   onDone,
@@ -16,73 +31,63 @@ export function Preloader({
   onDone: () => void;
 }) {
   const root = useRef<HTMLDivElement | null>(null);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
   const [gone, setGone] = useState(false);
 
   useGSAP(
     () => {
-      const q = gsap.utils.selector(root);
-      const up = q(".pre__half--up")[0];
-      const down = q(".pre__half--down")[0];
-      const print = q(".pre__print");
-      const chars = q(".pre__ch");
-      const status = q(".pre__status")[0];
+      const el = root.current;
+      const video = videoRef.current;
+      if (!el) return;
 
-      const finish = () => {
-        onDone();
-        setGone(true);
+      const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const plate = gsap.utils.selector(root)(".pre__plate")[0] as HTMLElement;
+
+      let fired = false;
+      const reveal = () => {
+        if (fired) return;
+        fired = true;
+
+        const tl = gsap.timeline({
+          onComplete: () => {
+            onDone();
+            setGone(true);
+          },
+        });
+
+        tl.add(() => onOpen(), 0);
+        // push in on the way out so the mark hands off to the page rather than
+        // simply switching off
+        if (!reduce && plate) {
+          tl.to(plate, { scale: 1.09, duration: 0.95, ease: "power2.in" }, 0);
+        }
+        tl.to(el, { autoAlpha: 0, duration: reduce ? 0.5 : 0.95, ease: "power2.inOut" }, 0);
       };
 
-      // both clipped copies of a letter share data-i so they move as one
-      const perColumn = (_: number, el: Element) =>
-        Number((el as HTMLElement).dataset.i) * 0.075;
-
-      // reduced motion gets the seal the hold and a plain dissolve
-      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-        gsap.set(print, { yPercent: 0 });
-        gsap.set(chars, { yPercent: 0, scale: 1, autoAlpha: 1 });
-        gsap.to(root.current, {
-          autoAlpha: 0,
-          duration: 0.45,
-          delay: content.preloader.holdMs / 1000,
-          onStart: onOpen,
-          onComplete: finish,
-        });
-        return;
+      // reduced motion never gets the clip. Hold the assembled still instead.
+      if (reduce) {
+        video?.pause();
+        const hold = window.setTimeout(reveal, content.preloader.holdMs);
+        return () => window.clearTimeout(hold);
       }
 
-      const tl = gsap.timeline({ onComplete: finish });
+      // the clip is the whole animation, so the reveal is driven by it ending
+      const onEnded = () => reveal();
+      // a missing codec or a refused source would otherwise hang forever
+      const onError = () => reveal();
+      video?.addEventListener("ended", onEnded);
+      video?.addEventListener("error", onError);
 
-      // letters bubble up into the mark then overshoot as they land
-      tl.fromTo(
-        chars,
-        { yPercent: 220, scale: 0.62, autoAlpha: 0 },
-        {
-          yPercent: 0,
-          scale: 1,
-          autoAlpha: 1,
-          duration: 0.95,
-          ease: "back.out(1.7)",
-          stagger: perColumn,
-        },
-      )
-        .fromTo(
-          status,
-          { autoAlpha: 0 },
-          { autoAlpha: 1, duration: 0.5 },
-          "-=0.35",
-        )
-        .to({}, { duration: content.preloader.holdMs / 1000 })
-        .to(status, { autoAlpha: 0, duration: 0.28 }, "<");
+      if (video) video.playbackRate = SPEED;
+      video?.play().catch(() => reveal());
 
-      // the two halves start a few frames apart so the seam gives way along its length
-      tl.addLabel("tear")
-        .add(onOpen)
-        .to(up, { yPercent: -101, duration: 1.15, ease: "power4.inOut" }, "tear")
-        .to(
-          down,
-          { yPercent: 101, duration: 1.15, ease: "power4.inOut" },
-          "tear+=0.07",
-        );
+      const guard = window.setTimeout(reveal, STALL_TIMEOUT_MS);
+
+      return () => {
+        window.clearTimeout(guard);
+        video?.removeEventListener("ended", onEnded);
+        video?.removeEventListener("error", onError);
+      };
     },
     { scope: root },
   );
@@ -97,33 +102,24 @@ export function Preloader({
       aria-live="polite"
       aria-label={content.preloader.a11y}
     >
-      <div className="pre__half pre__half--up" aria-hidden="true">
-        <Mark />
+      <div className="pre__plate" aria-hidden="true">
+        <video
+          ref={videoRef}
+          className="pre__video"
+          muted
+          playsInline
+          preload="auto"
+        >
+          {/* the media query keeps reduced-motion visitors from downloading a
+              4.75MB clip they will never be shown. With no source selected the
+              element stays inert, and the hold-and-dissolve path runs instead. */}
+          <source
+            src={VIDEO}
+            type="video/mp4"
+            media="(prefers-reduced-motion: no-preference)"
+          />
+        </video>
       </div>
-      <div className="pre__half pre__half--down" aria-hidden="true">
-        <Mark />
-      </div>
-      <span className="pre__status">{content.preloader.status}</span>
     </div>
-  );
-}
-
-function Mark() {
-  const { first, second } = content.wordmark;
-
-  const letters = (word: string, base: number) =>
-    [...word].map((ch, i) => (
-      <span key={base + i} className="pre__ch" data-i={base + i}>
-        {ch}
-      </span>
-    ));
-
-  return (
-    <span className="pre__print">
-      <span className="pre__word">{letters(first, 0)}</span>
-      <span className="pre__word pre__print-second">
-        {letters(second, first.length)}
-      </span>
-    </span>
   );
 }

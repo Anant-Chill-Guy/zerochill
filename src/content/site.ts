@@ -14,7 +14,7 @@ export const content = {
 
   ingress: {
     eyebrow: "",
-    headline: "THE CTF",
+    headline: "CTF",
     sub: "Nobody has reached the bottom.",
     readout: [
       { label: "Layers", value: "6" },
@@ -27,13 +27,11 @@ export const content = {
   },
 
   statement: {
-    eyebrow: "01 / The plant",
     lines: [
       "Every plant is a ladder",
       "[o] from the internet down to the water.",
       "We drew this one the way they actually are.",
     ],
-    circleCaption: "L4 · Enterprise",
     circleAlt:
       "A desert nuclear plant with cooling towers on the horizon, a dirt track leading toward it, and a weathered wooden sign reading \"CTF challenge 10 km away.\"",
   },

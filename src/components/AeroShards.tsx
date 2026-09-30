@@ -2086,12 +2086,23 @@ export default function AeroShards({
       gpu?.dispose();
     };
   }, []);
+
+  // Palette-derived field shown while the WebGPU canvas initialises and — on
+  // browsers without WebGPU (e.g. Firefox/Zen) where init() fails — as a
+  // permanent fallback so the section never renders as a flat void. The opaque
+  // canvas covers this once it becomes ready.
+  const toRgba = (c: Color, alpha: number) =>
+    `rgba(${Math.round(c[0] * 255)}, ${Math.round(c[1] * 255)}, ${Math.round(c[2] * 255)}, ${alpha})`;
+  const fallbackImage =
+    `radial-gradient(135% 105% at 72% 6%, ${toRgba(resolvedShardColor, 0.6)} 0%, transparent 58%), ` +
+    `radial-gradient(95% 95% at 16% 94%, ${toRgba(resolvedAccentColor, 0.34)} 0%, transparent 55%)`;
+
   return (
     <div
       ref={rootRef}
       className={`pointer-events-none relative isolate h-full w-full overflow-hidden ${className}`}
       data-ready={ready}
-      style={{ backgroundColor }}
+      style={{ backgroundColor, backgroundImage: fallbackImage }}
       aria-hidden="true"
     >
       <canvas

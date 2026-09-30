@@ -45,3 +45,5 @@ next-env.d.ts
 /reference/
 # unused 130MB source image (exceeds GitHub 100MB limit; not imported anywhere)
 /src/assets/layer-1.png
+# 20MB full-res logo source; the app uses the optimized /public/media/logo.png
+/public/media/logo-new.png

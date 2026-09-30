@@ -11,13 +11,13 @@ const PHASES = [
   {
     n: "01",
     title: "Recon",
-    desc: "Trace ASTAROTH's telemetry across the offline, IPv6-first VX6 mesh.",
-    tags: ["OSINT", "IPv6", "Recon"],
+    desc: "Trace ASTAROTH's telemetry across the offline physical network.",
+    tags: ["OSINT", "Network", "Recon"],
   },
   {
     n: "02",
     title: "Breach",
-    desc: "Turn one exposed edge service into a foothold on the mesh.",
+    desc: "Turn one exposed edge service into a foothold on the network.",
     tags: ["Web", "Pwn"],
   },
   {
@@ -225,9 +225,9 @@ export function Operation() {
           <h2 className="op-title">The Operation</h2>
           <p className="op-intro">
             Operation Neptune&apos;s Spear. The ASTAROTH syndicate holds Site-9
-            and runs its control logic on an offline VX6 mesh. Your cell is on
-            the wire: follow the trail, take a foothold, cross the boundary, and
-            reach centrifuge control before critical enrichment.
+            and runs its control logic on an offline physical network. Your cell
+            is on the wire: follow the trail, take a foothold, cross the
+            boundary, and reach centrifuge control before critical enrichment.
           </p>
           <p className="op-roles">
             Ops Control watches every route. <b>Rival cells will deceive you.</b>{" "}

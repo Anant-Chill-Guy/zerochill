@@ -8,19 +8,13 @@ import { useGSAP } from "@gsap/react";
 import { content } from "@/content/site";
 import { useTheme } from "@/components/use-theme";
 import { BlackHoleHeroSection } from "@/components/black-hole-hero-section";
-import AeroShards from "@/components/AeroShards";
+import { HeroSlides } from "@/components/hero/hero-slides";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 export function Ingress({ opened }: { opened: boolean }) {
   const root = useRef<HTMLElement | null>(null);
   const { theme } = useTheme();
-
-  // the WebGL field is coloured from the active palette so it retints with the toggle
-  const field =
-    theme === "deep"
-      ? { background: "#021526", shard: "#03346e", accent: "#6eacda" }
-      : { background: "#0b0604", shard: "#b8461c", accent: "#f9b637" };
 
   // the black-hole disc runs a hotter, more saturated orange in deep mode so it
   // pops against the blue; default mode keeps the component's normal orange
@@ -42,6 +36,7 @@ export function Ingress({ opened }: { opened: boolean }) {
           [
             q(".ingress__eyebrow"),
             q(".ingress__wm-item"),
+            q(".ingress__headline"),
             q(".ingress__hero-copy > *"),
             q(".ingress__readout"),
           ],
@@ -71,6 +66,12 @@ export function Ingress({ opened }: { opened: boolean }) {
             ease: "back.out(1.5)",
           },
           0.12,
+        )
+        .fromTo(
+          q(".ingress__headline"),
+          { yPercent: 55, autoAlpha: 0 },
+          { yPercent: 0, autoAlpha: 1, duration: 0.8, ease: "back.out(1.4)" },
+          0.62,
         )
         .fromTo(
           q(".ingress__hero-copy > *"),
@@ -103,9 +104,21 @@ export function Ingress({ opened }: { opened: boolean }) {
             start: "top top",
             end: "bottom top",
             scrub: true,
+            // the drift below is measured off the lockup's own height
+            invalidateOnRefresh: true,
           },
         })
-        .to(q(".ingress__wordmark"), { yPercent: -14, scale: 1.04 }, 0)
+        // The lockup drifts as one unit — targeting the wordmark alone would
+        // leave the superscript CTF behind. It rides `top` rather than a
+        // yPercent: the wordmark's difference blend only reaches the slides as
+        // long as nothing between it and the stage is a stacking context, and
+        // any transform on this wrapper would make it one. A relative `top` is
+        // a paint-time offset, so the motion is the same and the blend lives.
+        .to(
+          q(".ingress__lockup"),
+          { top: (_i, el) => -0.14 * (el as HTMLElement).offsetHeight },
+          0,
+        )
         .to(q(".ingress__hero-copy"), { yPercent: 22, autoAlpha: 0.4 }, 0)
         .to(q(".ingress__readout"), { autoAlpha: 0 }, 0);
     },
@@ -116,37 +129,7 @@ export function Ingress({ opened }: { opened: boolean }) {
     <section ref={root} className="seq" aria-labelledby="ingress-headline">
       <div className="seq__stage">
         <div className="ingress__bg" aria-hidden="true">
-          <AeroShards
-            backgroundColor={field.background}
-            shardColor={field.shard}
-            accentColor={field.accent}
-            placement="full"
-            flow="stream"
-            material="pearl"
-            detail="balanced"
-            effect="none"
-            scale={1}
-            spread={1}
-            depth={1}
-            speed={1}
-            spin={1}
-            interaction="repel"
-            density={1.5}
-            shardSize={1.1}
-            stretch={1}
-            turbulence={1}
-            glow={1}
-            edgeSoftness={2}
-            bloom={0.5}
-            grain={0.05}
-            chromaticAberration={0.0075}
-            transitionDuration={1}
-            interactionRadius={1.5}
-            interactionStrength={0.5}
-            rippleIntensity={1}
-            holdToGather
-            paused={false}
-          />
+          <HeroSlides />
         </div>
 
         <div className="seq__inner ingress__hero">
@@ -154,38 +137,41 @@ export function Ingress({ opened }: { opened: boolean }) {
             {content.ingress.eyebrow}
           </span>
 
-          <div className="ingress__wordmark" aria-hidden="true">
-            <span className="ingress__wm-letter ingress__wm-item">V</span>
-            <span className="ingress__wm-hole ingress__wm-item">
-              <BlackHoleHeroSection
-                distance={10.5}
-                fov={46}
-                elevation={-6}
-                roll={-6}
-                focus={[0.5, 0.5]}
-                diskInner={3}
-                diskOuter={13}
-                diskThickness={0.3}
-                doppler={0.32}
-                brightness={1.1}
-                glow={1}
-                vignette={0.12}
-                resolution={0.66}
-                steps={260}
-                maxDpr={1.5}
-                hotColor={hole.hot}
-                midColor={hole.mid}
-                coolColor={hole.cool}
-              />
-            </span>
-            <span className="ingress__wm-letter ingress__wm-item">I</span>
-            <span className="ingress__wm-letter ingress__wm-item">D</span>
-          </div>
+          <div className="ingress__lockup">
+            <div className="ingress__wordmark" aria-hidden="true">
+              <span className="ingress__wm-letter ingress__wm-item">V</span>
+              <span className="ingress__wm-hole ingress__wm-item">
+                <BlackHoleHeroSection
+                  distance={10.5}
+                  fov={46}
+                  elevation={-6}
+                  roll={-6}
+                  focus={[0.5, 0.5]}
+                  diskInner={3}
+                  diskOuter={13}
+                  diskThickness={0.3}
+                  doppler={0.32}
+                  brightness={1.1}
+                  glow={1}
+                  vignette={0.12}
+                  resolution={0.66}
+                  steps={260}
+                  maxDpr={1.5}
+                  hotColor={hole.hot}
+                  midColor={hole.mid}
+                  coolColor={hole.cool}
+                />
+              </span>
+              <span className="ingress__wm-letter ingress__wm-item">I</span>
+              <span className="ingress__wm-letter ingress__wm-item">D</span>
+            </div>
 
-          <div className="ingress__hero-copy">
             <h2 id="ingress-headline" className="ingress__headline">
               {content.ingress.headline}
             </h2>
+          </div>
+
+          <div className="ingress__hero-copy">
             <p className="ingress__sub">{content.ingress.sub}</p>
           </div>
         </div>
