@@ -109,11 +109,8 @@ export function Ingress({ opened }: { opened: boolean }) {
           },
         })
         // The lockup drifts as one unit — targeting the wordmark alone would
-        // leave the superscript CTF behind. It rides `top` rather than a
-        // yPercent: the wordmark's difference blend only reaches the slides as
-        // long as nothing between it and the stage is a stacking context, and
-        // any transform on this wrapper would make it one. A relative `top` is
-        // a paint-time offset, so the motion is the same and the blend lives.
+        // leave the superscript CTF behind. It rides `top` so the wrapper stays
+        // a paint-time offset rather than a transform.
         .to(
           q(".ingress__lockup"),
           { top: (_i, el) => -0.14 * (el as HTMLElement).offsetHeight },

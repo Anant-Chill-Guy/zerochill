@@ -31,14 +31,14 @@ const LEDE = [
   "Void CTF encompasses a two-part cybersecurity event.",
   "The online qualifier round will have a host of challenges in the domains of",
 ];
-// the qualifier sentence runs on into the ledger, so its conjunction rides the
-// last row and the aria sentence can be reassembled verbatim
+// the qualifier sentence runs on into the ledger, so its last row closes the
+// comma list the lede opens, and the aria sentence can be reassembled verbatim
 const DOMAINS = [
   "Web Exploitation",
   "Cryptography",
   "Reverse Engineering",
   "Binary Exploitation",
-  "and Forensics",
+  "Forensics",
 ];
 const ARSENAL = DOMAINS.map((act, i) => ({
   tag: String(i + 1).padStart(2, "0"),
@@ -308,7 +308,7 @@ export function Statement() {
   };
 
   return (
-    <section ref={root} className="seq" aria-labelledby="stmt-heading">
+    <section id="about" ref={root} className="seq" aria-labelledby="stmt-heading">
       <div className="seq__stage">
         <div className="seq__inner flex flex-col justify-center">
           <h2 id="stmt-heading" className="stmt__lines mt-6">

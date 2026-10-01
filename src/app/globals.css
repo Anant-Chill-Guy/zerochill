@@ -33,6 +33,12 @@
        end of this file flips them to near-black. */
     --hero-ink: var(--color-bone);
     --hero-ink-muted: color-mix(in srgb, var(--hero-ink) 84%, transparent);
+    /* The mark itself — V, I, D and the CTF superscript — runs a flat dark
+       brown instead, so it reads against the sunlit desert frames. Pinned as a
+       literal rather than var(--color-iron-600): the deep palette remaps that
+       token to its blue, which would recolour the mark. The sub-line keeps
+       --hero-ink, since muted brown on sand stops reading at small sizes. */
+    --hero-mark-ink: #402719;
     /* the lockup sits on photography, so the type carries a shadow to stay
        legible. It has to invert with the ink, or black type would end up
        sitting in a dark halo. */
@@ -1116,10 +1122,9 @@
     overflow: hidden;
   }
 
-  /* No z-index: it would make this a stacking context, and therefore an
-     isolated group, which cuts the wordmark's difference blend off from the
-     slides in .ingress__bg. Paint order is unchanged — .ingress__bg carries
-     z-index: 0 and this comes later in the DOM, so it still sits on top. */
+  /* No z-index: it would make this a stacking context. Paint order is
+     unchanged — .ingress__bg carries z-index: 0 and this comes later in the
+     DOM, so it still sits on top. */
   .seq__inner {
     position: relative;
     height: 100%;
@@ -1199,9 +1204,8 @@
     justify-content: center;
   }
 
-  /* No will-change here: the tween drives the letters, not the wordmark, so it
-     was only ever a hint — and a transform hint makes this an isolated group,
-     which would stop the letters blending with the slides behind them. */
+  /* No will-change here: the tween drives the letters, not the wordmark, so a
+     hint on this element would never be used. */
   .ingress__wordmark {
     display: flex;
     align-items: center;
@@ -1219,16 +1223,10 @@
     will-change: transform, opacity;
   }
 
-  /* the letters invert the slides rather than sit on them: difference against
-     white is a true negative, so each glyph lands near-black over the sunlit
-     frames and near-white over the shaded ones. That is also why the ink
-     shadow is gone — a negative carries its own contrast, and a shadow would
-     only smear the edge it is supposed to protect.
-     Lands on the frame painted by .ingress__bg, which is why nothing between
-     here and .seq__stage may create a stacking context. */
+  /* a flat fill, not a blend: the letters carry the mark's own dark brown, so
+     the colour is fixed rather than sampling the frame behind it. */
   .ingress__wm-letter {
-    color: #ffffff;
-    mix-blend-mode: difference;
+    color: var(--hero-mark-ink);
   }
 
   /* the O slot: the black hole renders as its full round element. The disc
@@ -1269,10 +1267,8 @@
     line-height: 1;
     letter-spacing: 0.24em;
     text-transform: uppercase;
-    /* rides the same difference blend as the letters, so the designation reads
-       against the field instead of disappearing into it */
-    color: #ffffff;
-    mix-blend-mode: difference;
+    /* same flat dark brown as the letters carrying VOID */
+    color: var(--hero-mark-ink);
     white-space: nowrap;
   }
 
@@ -1920,18 +1916,20 @@
     font-size: clamp(3.4rem, 18vw, 17rem);
     line-height: 0.86;
     letter-spacing: -0.035em;
-    color: var(--color-iron-950);
+    /* dark brown on the cream sheet — matches the ink the light palette hook
+       hands the hero lockup */
+    color: var(--color-iron-600);
     user-select: none;
   }
 
+  /* the whole lockup runs one colour: no accent on the second word */
   .ft__mark-second {
-    color: var(--color-vermilion);
+    color: inherit;
   }
 
   .ft__grid {
     display: grid;
-    /* two-up on phones so three link columns do not run the footer long */
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: minmax(0, 1fr);
     gap: clamp(1.75rem, 6vw, 2.5rem) 1.25rem;
     margin-top: clamp(2.5rem, 6vh, 4rem);
     padding-top: clamp(1.5rem, 3vh, 2.25rem);
@@ -1940,7 +1938,7 @@
 
   @media (min-width: 820px) {
     .ft__grid {
-      grid-template-columns: 1.4fr repeat(3, minmax(0, 1fr));
+      grid-template-columns: 1.4fr minmax(0, 1fr);
       gap: clamp(2rem, 4vw, 3rem);
     }
   }
@@ -2053,6 +2051,17 @@
     color: rgba(11, 6, 4, 0.55);
   }
 
+  /* keeps the legal row's mono caps rhythm; only the colour lifts on hover */
+  .ft__legal-link {
+    color: inherit;
+    transition: color 0.2s ease;
+  }
+
+  .ft__legal-link:hover,
+  .ft__legal-link:focus-visible {
+    color: var(--color-vermilion);
+  }
+
   .ft__cta {
     color: var(--color-iron-950);
     background: var(--color-vermilion);
@@ -2067,12 +2076,9 @@
   /* stack the legal row and give the CTA the full measure on small screens */
   @media (max-width: 560px) {
     .ft__legal {
-      align-items: stretch;
+      flex-direction: column;
+      align-items: flex-start;
       gap: 1.15rem;
-    }
-
-    .ft__legal > span {
-      width: 100%;
     }
 
     .ft__cta {
@@ -2116,7 +2122,7 @@ html[data-theme="deep"] {
    black against a still-dark page. Note the nav, readout and the sections below
    the fold are not covered by this hook and will need their own light values. */
 html[data-theme="light"] {
-  --hero-ink: #0b0604;
+  --hero-ink: var(--color-iron-600);
   --hero-ink-shadow: 0 0.015em 0.13em rgb(255 255 255 / 0.7);
   --hero-sub-shadow: 0 1px 14px rgb(255 255 255 / 0.85);
 }

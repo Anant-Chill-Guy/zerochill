@@ -2,6 +2,9 @@ import Image from "next/image";
 
 import { content } from "@/content/site";
 
+// off-site links open in their own tab, matching the legal row below them
+const isExternal = (href: string) => href.startsWith("http");
+
 export function SiteFooter() {
   return (
     <footer className="ft">
@@ -30,7 +33,13 @@ export function SiteFooter() {
                 <ul className="ft__col-list">
                   {col.links.map((link) => (
                     <li key={link.label}>
-                      <a className="ft__link" href={link.href}>
+                      <a
+                        className="ft__link"
+                        href={link.href}
+                        {...(isExternal(link.href)
+                          ? { target: "_blank", rel: "noopener noreferrer" }
+                          : {})}
+                      >
                         {link.label}
                       </a>
                     </li>
@@ -41,7 +50,15 @@ export function SiteFooter() {
           </div>
 
           <div className="ft__legal">
-            <span>{content.footer.legal}</span>
+            <a
+              className="ft__legal-link"
+              href={content.footer.legal.href}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {content.footer.legal.label}
+            </a>
+            <span className="ft__credit">{content.footer.credit}</span>
             <a href={content.footer.cta.href} className="btn btn--sm ft__cta">
               {content.footer.cta.label}
               <span className="btn__arrow" aria-hidden="true">

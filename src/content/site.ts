@@ -59,33 +59,20 @@ export const content = {
     second: "CTF",
     columns: [
       {
-        title: "Range",
-        links: [
-          { label: "Root Protocol", href: "#root-protocol" },
-          { label: "Leaderboard", href: "#leaderboard" },
-          { label: "Rules", href: "#rules" },
-        ],
-      },
-      {
-        title: "Records",
-        links: [
-          { label: "Archive", href: "#" },
-          { label: "Write-ups", href: "#" },
-          { label: "Scoring", href: "#" },
-        ],
-      },
-      {
         title: "Society",
         links: [
-          { label: "About", href: "#" },
-          { label: "Contact", href: "#" },
-          { label: "Conduct", href: "#" },
+          { label: "About", href: "https://void-society.in/" },
+          { label: "Email", href: "mailto:voidsociety@kiet.edu" },
+          { label: "Phone", href: "tel:+919876543210" },
+          { label: "Rules", href: "#rules" },
+          { label: "Write-ups", href: "#" },
         ],
       },
     ],
     disclaimer:
       "Every system in the range is synthetic. Nothing here touches a live utility.",
-    legal: "Void Society",
-    cta: { label: "Register", href: "https://void-ctf.ctfd.io/" },
+    legal: { label: "Void Society", href: "https://void-society.in/" },
+    credit: "Design & Develope by Team Void",
+    cta: { label: "Register", href: "https://void-ctf.ctfd.io/register" },
   },
 } as const;
