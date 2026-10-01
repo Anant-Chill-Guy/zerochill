@@ -78,7 +78,7 @@ function statuses(now: number): (Status | null)[] {
     const days = Math.ceil((from - now) / DAY);
     return {
       kind: "next",
-      label: days <= 1 ? "Starts tomorrow" : `Starts in ${days} days`,
+      label: days <= 1 ? "LIVE NOW" : `Starts in ${days} days`,
     };
   });
 }

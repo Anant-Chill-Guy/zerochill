@@ -753,60 +753,77 @@
     margin-top: clamp(3rem, 7vh, 5rem);
   }
 
-  .pr-steps {
+  /* the rules themselves: short lines, so they run two up on anything wide
+     enough to hold them side by side */
+  .pr-list {
     list-style: none;
-    margin: 1.75rem 0 0;
+    margin: 0;
     padding: 0;
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: clamp(1rem, 2.4vw, 2.25rem);
+    gap: 0.9rem;
   }
 
-  .pr-step__idx {
-    font-family: var(--font-display);
-    font-size: 0.95rem;
-    letter-spacing: 0.02em;
+  .pr-list--rules {
+    margin-top: 1.75rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.9rem clamp(1rem, 2.4vw, 2.25rem);
   }
 
-  .pr-steps > li:nth-child(1) .pr-step__idx { color: var(--color-vermilion); }
-  .pr-steps > li:nth-child(2) .pr-step__idx { color: var(--color-tangerine); }
-  .pr-steps > li:nth-child(3) .pr-step__idx { color: var(--color-amber); }
-  .pr-steps > li:nth-child(4) .pr-step__idx { color: var(--color-cream); }
+  .pr-list > li {
+    position: relative;
+    padding-left: 1.35rem;
+    font-size: clamp(0.95rem, 1.15vw, 1.05rem);
+    line-height: 1.6;
+    color: var(--color-ink-300);
+  }
 
-  .pr-step__title {
-    margin-top: 0.7rem;
+  /* square bullet, matching the marker language elsewhere on the page */
+  .pr-list > li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.62em;
+    width: 6px;
+    height: 6px;
+    background: var(--color-tangerine);
+  }
+
+  /* gold for the win conditions, so the two lists do not read as one */
+  .pr-list--victory > li::before {
+    background: var(--color-amber);
+  }
+
+  /* the payoff block sits under the rules, split off by the same hairline the
+     footer uses to separate its own rows */
+  .pr-victory {
+    margin-top: clamp(2.25rem, 5vh, 3.25rem);
+    padding-top: clamp(1.5rem, 3vh, 2rem);
+    border-top: 1px solid var(--rule);
+  }
+
+  .pr-victory__title {
     font-family: var(--font-display);
     font-size: clamp(1.05rem, 1.6vw, 1.35rem);
     letter-spacing: -0.01em;
     color: var(--color-bone);
   }
 
-  .pr-step__desc {
-    margin-top: 0.55rem;
-    font-size: clamp(0.82rem, 0.98vw, 0.92rem);
-    line-height: 1.7;
-    color: var(--color-ink-400);
+  .pr-victory .pr-list {
+    margin-top: 0.9rem;
+    max-width: 68ch;
   }
 
   @media (max-width: 860px) {
-    .pr-steps {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 1.75rem 1.5rem;
+    .pr-list--rules {
+      grid-template-columns: 1fr;
+      gap: 1rem;
     }
     .pr-strip {
       --spectrum-gap: 0;
     }
-    .pr-step {
-      padding-top: 1.25rem;
-      border-top: 1px solid var(--rule);
-    }
   }
 
   @media (max-width: 560px) {
-    .pr-steps {
-      grid-template-columns: 1fr;
-      gap: 1.5rem;
-    }
     .pr-inner {
       padding-inline: 1.25rem;
     }
@@ -1940,6 +1957,11 @@
     position: relative;
     isolation: isolate;
     background-color: var(--color-iron-950);
+    /* The sheet's ink: flat dark brown, pinned as a literal because the deep
+       palette remaps --color-iron-600 to its blue and the cream sheet does not
+       flip with it. Mirrors MARK_INK in site-footer.tsx, which the canvas mark
+       takes as a value — keep the two in step. */
+    --ft-ink: #402719;
   }
 
   .ft__sheet {
@@ -2017,7 +2039,7 @@
     font-size: 1.625rem;
     font-weight: 700;
     line-height: 1.15;
-    color: var(--color-iron-600);
+    color: var(--ft-ink);
     transition: color 0.2s ease;
   }
 
@@ -2079,8 +2101,10 @@
     margin-top: clamp(2rem, 5vh, 3rem);
     padding-top: clamp(1rem, 2.5vh, 1.5rem);
     border-top: 1px solid rgba(11, 6, 4, 0.18);
-    color: var(--color-iron-600);
-    transition: color 0.2s ease;
+    color: var(--ft-ink);
+    transition:
+      color 0.2s ease,
+      border-top-color 0.2s ease;
   }
 
   .ft__society-name {
@@ -2098,26 +2122,12 @@
     letter-spacing: 0.08em;
   }
 
+  /* the rule over the band carries the hover, so the line itself answers the
+     pointer the way the items above it do */
   .ft__society:hover,
   .ft__society:focus-visible {
     color: var(--color-vermilion);
-  }
-
-  /* the rule under the whole band thickens on hover, so the line itself
-     answers the pointer the way the items above it do */
-  .ft__society::after {
-    content: "";
-    flex-basis: 100%;
-    height: 1px;
-    background: currentColor;
-    transform: scaleX(0);
-    transform-origin: left center;
-    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
-  }
-
-  .ft__society:hover::after,
-  .ft__society:focus-visible::after {
-    transform: scaleX(1);
+    border-top-color: currentColor;
   }
 
   .ft__legal {
