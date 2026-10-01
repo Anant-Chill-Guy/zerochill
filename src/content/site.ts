@@ -73,6 +73,6 @@ export const content = {
       href: "https://void-society.in/",
     },
     credit: "Design & Develope by Team Void",
-    cta: { label: "Register", href: "https://void-ctf.ctfd.io/register" },
+    cta: { label: "Register", href: "https://void-ctf.ctfd.io/" },
   },
 } as const;

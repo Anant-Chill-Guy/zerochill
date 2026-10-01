@@ -949,6 +949,18 @@
     transform: translateY(-4px);
   }
 
+  /* the whole card is the link: an empty anchor laid over art and panel */
+  .tl-card__link {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+  }
+
+  .tl-card__link:focus-visible {
+    outline: 2px solid var(--color-amber);
+    outline-offset: 4px;
+  }
+
   @media (min-width: 1000px) {
     /* one row: the two stages read as a pair, and the section stops being
        two full-width cards tall */

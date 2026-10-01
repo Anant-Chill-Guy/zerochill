@@ -94,7 +94,12 @@ export function SiteFooter() {
 
           <div className="ft__legal">
             <span className="ft__credit">{content.footer.credit}</span>
-            <a href={content.footer.cta.href} className="btn btn--sm ft__cta">
+            <a
+              href={content.footer.cta.href}
+              className="btn btn--sm ft__cta"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               {content.footer.cta.label}
               <span className="btn__arrow" aria-hidden="true">
                 →

@@ -8,6 +8,9 @@ import { useGSAP } from "@gsap/react";
 
 gsap.registerPlugin(ScrollTrigger);
 
+// both stage cards open the CTF platform
+const CTF_URL = "https://void-ctf.ctfd.io/";
+
 // Portrait art for the finals. The qualifier carries its own card, close
 // enough in shape that the two mobile cards still come out near one size.
 const PORTRAIT = { src: "/media/stage-card-tall.webp", w: 1200, h: 1853 };
@@ -133,6 +136,14 @@ export function Timeline() {
                 </div>
                 <p className="tl-card__desc">{s.desc}</p>
               </div>
+
+              <a
+                className="tl-card__link"
+                href={CTF_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`${s.title} on the CTF platform`}
+              />
             </li>
           ))}
         </ol>

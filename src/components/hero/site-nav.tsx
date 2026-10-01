@@ -102,7 +102,7 @@ export function SiteNav() {
 
         <div className="flex items-center gap-3">
           <a
-            href="https://void-ctf.ctfd.io/register"
+            href="https://void-ctf.ctfd.io/"
             target="_blank"
             rel="noopener noreferrer"
             className="btn btn--ghost btn--sm hidden md:inline-flex"
@@ -143,7 +143,7 @@ export function SiteNav() {
               </a>
             ))}
             <a
-              href="https://void-ctf.ctfd.io/register"
+              href="https://void-ctf.ctfd.io/"
               target="_blank"
               rel="noopener noreferrer"
               className="btn btn--ghost btn--sm mt-3 self-start"
