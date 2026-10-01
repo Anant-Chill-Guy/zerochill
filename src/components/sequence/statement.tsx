@@ -26,28 +26,39 @@ const PAN_FROM = 15;
 const PAN_TO = 55;
 
 // overlay briefing, revealed in beats once the plant window is open:
-// lede, the arsenal (one row per CTF category), the warning, the welcome
+// lede, the domain ledger, the finals warning, the close
 const LEDE = [
-  "The battlefield is invisible.",
-  "The weapons are code, intelligence, and deception.",
+  "Void CTF encompasses a two-part cybersecurity event.",
+  "The online qualifier round will have a host of challenges in the domains of",
 ];
-const ARSENAL = [
-  { tag: "Crypto", act: "Break ciphers" },
-  { tag: "Stego", act: "Uncover hidden messages" },
-  { tag: "Forensics", act: "Analyze forensic evidence" },
-  { tag: "Reversing", act: "Reverse engineer malware" },
-  { tag: "Pwn", act: "Exploit vulnerable systems" },
-  { tag: "OSINT", act: "Hunt intelligence across the web" },
+// the qualifier sentence runs on into the ledger, so its conjunction rides the
+// last row and the aria sentence can be reassembled verbatim
+const DOMAINS = [
+  "Web Exploitation",
+  "Cryptography",
+  "Reverse Engineering",
+  "Binary Exploitation",
+  "and Forensics",
 ];
-const ENEMY = { before: "The enemy has hidden their", redacted: "secrets", after: "well." };
-const WELCOME = "Welcome to VOID CTF.";
-const HIGHLIGHT = new Set(["invisible", "void", "ctf"]);
+const ARSENAL = DOMAINS.map((act, i) => ({
+  tag: String(i + 1).padStart(2, "0"),
+  act,
+}));
+const ENEMY = {
+  before:
+    "The top 15 scoring teams in this round will advance to the in-person finale event, where all 15 teams will compete in a",
+  redacted: "winner-take-all",
+  after: "race to sabotage an actual physical network.",
+};
+const WELCOME =
+  "Teams will have to work their way through the network to achieve the final objective by exploiting a myriad of different vulnerabilities — ranging from AD exploits to SCADA/ICS hacking.";
+const HIGHLIGHT = new Set(["void", "ctf", "vulnerabilities", "scadaics"]);
 const bareWord = (w: string) => w.replace(/[^a-z]/gi, "").toLowerCase();
 
 // the full briefing as prose for assistive tech; the visual version is split
 const MESSAGE = [
-  LEDE.join(" "),
-  "Break ciphers, uncover hidden messages, analyze forensic evidence, reverse engineer malware, exploit vulnerable systems, and hunt intelligence across the web.",
+  LEDE[0],
+  `${LEDE[1]} ${DOMAINS.join(", ")}.`,
   `${ENEMY.before} ${ENEMY.redacted} ${ENEMY.after}`,
   WELCOME,
 ].join(" ");

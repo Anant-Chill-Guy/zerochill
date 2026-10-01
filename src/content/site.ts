@@ -17,10 +17,12 @@ export const content = {
     headline: "CTF",
     sub: "Nobody has reached the bottom.",
     readout: [
+      { label: "Online CTF", value: "24 – 25 Oct" },
+      { label: "Offline CTF", value: "29 – 30 Nov" },
       { label: "Format", value: "24 H Offline" },
       { label: "Battleground", value: "Physical Network" },
       { label: "Mode", value: "Attack / Defense" },
-      { label: "Hosted By", value: "COE — Cyber Security" },
+      { label: "Hosted By", value: "KIET Cyber Security Center of Excellence" },
     ],
     tagline: "The uniqueness makes us what we are",
     mosaicAlt:
@@ -29,9 +31,9 @@ export const content = {
 
   statement: {
     lines: [
-      "A SIGNAL HAS DISAPPEARED INTO THE VOID.",
-      "[o] NO IDENTITY. NO LOCATION. NO EXPLANATION.",
-      "YOUR MISSION IS TO FIND WHAT WAS NEVER MEANT TO BE FOUND.",
+      "Deep in the desert, a rogue nation-state is trying to weaponize the power of the sun.",
+      "[o] Your mission, should you choose to accept it, is to sabotage",
+      "their facility and destroy their infrastructure.",
     ],
     circleAlt:
       "A desert nuclear plant with cooling towers on the horizon, a dirt track leading toward it, and a weathered wooden sign reading \"CTF challenge 10 km away.\"",

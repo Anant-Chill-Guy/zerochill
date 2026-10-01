@@ -276,10 +276,11 @@ export function Operation() {
         <aside className="op-aside">
           <h2 className="op-title">The Operation</h2>
           <p className="op-intro">
-            Operation Neptune&apos;s Spear. The ASTAROTH syndicate holds Site-9
-            and runs its control logic on an offline physical network. Your cell
-            is on the wire: follow the trail, take a foothold, cross the
-            boundary, and reach centrifuge control before critical enrichment.
+            Buried beneath the sand, a hostile regime is racing toward a weapon
+            no treaty can stop. Thousands of centrifuges spin in silence,
+            guarded by systems no outsider has ever touched. Slip past their
+            defenses, seize control of the machines from within, and bring the
+            entire enrichment line to a grinding halt.
           </p>
           <p className="op-roles">
             Ops Control watches every route. <b>Rival cells will deceive you.</b>{" "}

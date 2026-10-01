@@ -34,14 +34,14 @@ const STAGES = [
     n: "01",
     title: "Qualifiers",
     desc: "Compete in a 24-hour jeopardy-style CTF. The top 15 teams move on to the finals.",
-    meta: "Online · 24 h",
+    meta: "Online · 24 – 25 Oct",
     art: ART.qualifier,
   },
   {
     n: "02",
     title: "Finals",
     desc: "Attack and attempt to infiltrate the physical network set up by the organising team.",
-    meta: "Offline · 24 h",
+    meta: "Offline · 29 – 30 Nov",
     art: ART.finals,
   },
 ];
