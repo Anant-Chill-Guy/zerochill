@@ -5,8 +5,6 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 
-import { Spectrum } from "@/components/spectrum";
-
 gsap.registerPlugin(ScrollTrigger);
 
 // the standing rules — they hold for both phases, so they carry no dates
@@ -71,17 +69,18 @@ export function Protocol() {
           </p>
         </div>
 
-        <Spectrum className="pr-strip" />
-
         <div className="pr-groups">
-          <ul className="pr-list pr-list--rules">
-            {RULES.map((rule) => (
-              <li key={rule}>{rule}</li>
-            ))}
-          </ul>
+          <div className="pr-group">
+            <h3 className="pr-group__title">Rules of engagement</h3>
+            <ul className="pr-list pr-list--rules">
+              {RULES.map((rule) => (
+                <li key={rule}>{rule}</li>
+              ))}
+            </ul>
+          </div>
 
-          <div className="pr-victory">
-            <h3 className="pr-victory__title">Victory conditions</h3>
+          <div className="pr-group pr-victory">
+            <h3 className="pr-group__title">Victory conditions</h3>
             <ul className="pr-list pr-list--victory">
               {VICTORY.map((condition) => (
                 <li key={condition}>{condition}</li>

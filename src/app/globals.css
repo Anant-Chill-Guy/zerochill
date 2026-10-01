@@ -748,22 +748,24 @@
     color: var(--color-ink-300);
   }
 
-  .pr-strip {
-    --spectrum-gap: clamp(1rem, 2.4vw, 2.25rem);
-    margin-top: clamp(3rem, 7vh, 5rem);
-  }
-
-  /* Two blocks side by side. The rules are short single lines, so five of them
-     in a two-up grid left the last cell of the grid empty; run as one column
-     beside the payoff there is no hole to read, and the full measure still
-     gets used. .pr-list--rules carries no styles — it is the hook the scroll
-     animation selects on. */
+  /* Two blocks side by side, each under its own colour bar: the rules in
+     tangerine, the payoff in amber, matching their bullets. .pr-list--rules
+     carries no styles — it is the hook the scroll animation selects on. */
   .pr-groups {
-    margin-top: 1.75rem;
+    margin-top: clamp(3rem, 7vh, 5rem);
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 0.9rem clamp(1.75rem, 4vw, 3.5rem);
     align-items: start;
+  }
+
+  .pr-group {
+    padding-top: 1.75rem;
+    border-top: 3px solid var(--color-tangerine);
+  }
+
+  .pr-victory {
+    border-top-color: var(--color-amber);
   }
 
   .pr-list {
@@ -798,16 +800,14 @@
     background: var(--color-amber);
   }
 
-  /* the payoff block is the second column; the grid does the spacing, so it
-     only carries the panel's own type */
-  .pr-victory__title {
+  .pr-group__title {
     font-family: var(--font-display);
     font-size: clamp(1.05rem, 1.6vw, 1.35rem);
     letter-spacing: -0.01em;
     color: var(--color-bone);
   }
 
-  .pr-victory .pr-list {
+  .pr-group .pr-list {
     margin-top: 0.9rem;
   }
 
@@ -815,14 +815,6 @@
     .pr-groups {
       grid-template-columns: minmax(0, 1fr);
       gap: 2rem;
-    }
-    /* stacked, the two blocks need the hairline back to stay separate */
-    .pr-victory {
-      padding-top: 1.75rem;
-      border-top: 1px solid var(--rule);
-    }
-    .pr-strip {
-      --spectrum-gap: 0;
     }
   }
 
