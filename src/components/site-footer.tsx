@@ -88,7 +88,7 @@ export function SiteFooter() {
             <span className="ft__society-name">{content.footer.society.label}</span>
             <span className="ft__society-url">
               {content.footer.society.url}
-              <span aria-hidden="true"> →</span>
+              <span aria-hidden="true"> ↗</span>
             </span>
           </a>
 
@@ -101,9 +101,6 @@ export function SiteFooter() {
               rel="noopener noreferrer"
             >
               {content.footer.cta.label}
-              <span className="btn__arrow" aria-hidden="true">
-                →
-              </span>
             </a>
           </div>
         </div>

@@ -300,13 +300,6 @@
     border-color: rgba(255, 255, 255, 0.45);
   }
 
-  .btn__arrow {
-    transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
-  }
-
-  .btn:hover .btn__arrow {
-    transform: translateX(3px);
-  }
 }
 
 /* hero */
@@ -611,7 +604,7 @@
     color: var(--color-ink-400);
   }
 
-  .op-status::before {
+  .op-status--live::before {
     content: "";
     width: 6px;
     height: 6px;
@@ -1384,7 +1377,6 @@
     width: clamp(2.5rem, 6vw, 4.5rem);
     height: 1px;
     background: var(--color-vermilion);
-    box-shadow: 0 0 12px rgba(231, 63, 30, 0.65);
   }
 
   /* the rule between the cells doubles as the gutter; it is spaced off both
@@ -1427,23 +1419,10 @@
     color: var(--color-bone);
   }
 
-  /* the two scheduled windows: display type, amber, with a live marker on the
-     label the way an on-air channel carries one */
+  /* the two scheduled windows: display type, amber */
   .ingress__readout-row > div:nth-child(1) .ingress__cell-label,
   .ingress__readout-row > div:nth-child(4) .ingress__cell-label {
     color: var(--color-cream);
-  }
-
-  .ingress__readout-row > div:nth-child(1) .ingress__cell-label::before,
-  .ingress__readout-row > div:nth-child(4) .ingress__cell-label::before {
-    content: "";
-    display: inline-block;
-    width: 0.45em;
-    height: 0.45em;
-    margin-right: 0.6em;
-    vertical-align: 0.1em;
-    background: var(--color-vermilion);
-    box-shadow: 0 0 10px rgba(231, 63, 30, 0.75);
   }
 
   .ingress__readout-row > div:nth-child(1) .ingress__cell-value,
@@ -1660,7 +1639,6 @@
     height: 3px;
     margin-bottom: clamp(0.7rem, 1.6vw, 1.15rem);
     background: var(--color-vermilion);
-    box-shadow: 0 0 18px rgba(231, 63, 30, 0.6);
     transform-origin: left center;
   }
 
@@ -1697,12 +1675,10 @@
 
   .stmt__word-in--hot {
     color: var(--color-vermilion);
-    text-shadow:
-      0 0 26px rgba(231, 63, 30, 0.55),
-      0 2px 8px rgba(11, 6, 4, 0.85);
+    text-shadow: 0 2px 8px rgba(11, 6, 4, 0.85);
   }
 
-  /* the arsenal: one ledger row per discipline, category code on the left */
+  /* the arsenal: one ledger row per discipline */
   .stmt__arsenal {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
@@ -1721,15 +1697,6 @@
     padding-block: 0.5em;
     border-top: 1px solid var(--rule-strong);
     will-change: transform, opacity;
-  }
-
-  .stmt__arm-tag {
-    flex: none;
-    width: 3.2em;
-    font-size: 0.78em;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: var(--color-amber);
   }
 
   .stmt__arm-act {
@@ -2212,14 +2179,8 @@ html[data-theme="deep"] .stmt__veil {
     );
 }
 
-html[data-theme="deep"] .stmt__message-bar {
-  box-shadow: 0 0 18px rgba(110, 172, 218, 0.6);
-}
-
 html[data-theme="deep"] .stmt__word-in--hot {
-  text-shadow:
-    0 0 26px rgba(110, 172, 218, 0.55),
-    0 2px 8px rgba(2, 21, 38, 0.85);
+  text-shadow: 0 2px 8px rgba(2, 21, 38, 0.85);
 }
 
 /* THEME_TOGGLE_STYLES */

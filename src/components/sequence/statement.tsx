@@ -40,10 +40,6 @@ const DOMAINS = [
   "Binary Exploitation",
   "Forensics",
 ];
-const ARSENAL = DOMAINS.map((act, i) => ({
-  tag: String(i + 1).padStart(2, "0"),
-  act,
-}));
 const ENEMY = {
   before:
     "The top 15 scoring teams in this round will advance to the in-person finale event, where all 15 teams will compete in a",
@@ -51,7 +47,7 @@ const ENEMY = {
   after: "race to sabotage an actual physical network.",
 };
 const WELCOME =
-  "Teams will have to work their way through the network to achieve the final objective by exploiting a myriad of different vulnerabilities — ranging from AD exploits to SCADA/ICS hacking.";
+  "Teams will have to work their way through the network to achieve the final objective by exploiting a myriad of different vulnerabilities, ranging from AD exploits to SCADA/ICS hacking.";
 const HIGHLIGHT = new Set(["void", "ctf", "vulnerabilities", "scadaics"]);
 const bareWord = (w: string) => w.replace(/[^a-z]/gi, "").toLowerCase();
 
@@ -343,9 +339,8 @@ export function Statement() {
             </p>
 
             <ul className="stmt__arsenal">
-              {ARSENAL.map(({ tag, act }) => (
-                <li key={tag} className="stmt__arm">
-                  <span className="stmt__arm-tag">{tag}</span>
+              {DOMAINS.map((act) => (
+                <li key={act} className="stmt__arm">
                   <span className="stmt__arm-act">{act}</span>
                 </li>
               ))}

@@ -17,10 +17,10 @@ export const content = {
     headline: "CTF",
     sub: "Nobody has reached the bottom.",
     readout: [
-      { label: "Online / Qualifiers CTF", value: "24 – 25 Oct" },
+      { label: "Online / Qualifiers CTF", value: "24-25 Oct" },
       { label: "Mode", value: "Jeopardy" },
       { label: "Format", value: "24 Hours" },
-      { label: "Offline CTF", value: "29 – 30 Nov" },
+      { label: "Offline CTF", value: "29-30 Nov" },
       { label: "Mode", value: "Attack Defense" },
       { label: "Format", value: "24 Hours Offline" },
     ],
@@ -72,7 +72,7 @@ export const content = {
       url: "void-society.in",
       href: "https://void-society.in/",
     },
-    credit: "Design & Develope by Team Void",
+    credit: "Designed and built by Team Void",
     cta: { label: "Register", href: "https://void-ctf.ctfd.io/" },
   },
 } as const;

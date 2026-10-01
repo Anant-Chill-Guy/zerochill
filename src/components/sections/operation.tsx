@@ -12,7 +12,7 @@ const PHASES = [
   {
     n: "01",
     title: "Registration",
-    when: "2 – 23 Oct",
+    when: "2-23 Oct",
     start: "2026-10-02",
     end: "2026-10-23",
     desc: "Form a team, register it, and lock in your roster before the window closes on the 23rd.",
@@ -21,7 +21,7 @@ const PHASES = [
   {
     n: "02",
     title: "Qualifier CTF",
-    when: "24 – 25 Oct",
+    when: "24-25 Oct",
     start: "2026-10-24",
     end: "2026-10-25",
     desc: "A 24-hour jeopardy-style CTF. Pick challenges off the board across web, pwn, crypto, reversing, forensics and OSINT; every solve banks points, and the top 15 teams go through.",
@@ -39,7 +39,7 @@ const PHASES = [
   {
     n: "04",
     title: "Attack-Defense finals",
-    when: "29 – 30 Nov",
+    when: "29-30 Nov",
     start: "2026-11-29",
     end: "2026-11-30",
     desc: "Every team hunts the same objective on the physical network for 24 hours. Find your way to it, and throw rivals off the trail along the way: plant false leads, bury the real path, waste their time. Anything goes inside the network. Nothing leaves it.",
@@ -78,7 +78,7 @@ function statuses(now: number): (Status | null)[] {
     const days = Math.ceil((from - now) / DAY);
     return {
       kind: "next",
-      label: days <= 1 ? "LIVE NOW" : `Starts in ${days} days`,
+      label: days <= 1 ? "Starts tomorrow" : `Starts in ${days} days`,
     };
   });
 }

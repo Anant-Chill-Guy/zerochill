@@ -8,7 +8,7 @@ export default function Home() {
   return (
     <main className="relative">
       <h1 className="sr-only">
-        VOID CTF — a 24-hour offensive security competition on industrial
+        VOID CTF, a 24-hour offensive security competition on industrial
         control systems
       </h1>
 

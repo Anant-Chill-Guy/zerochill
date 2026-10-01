@@ -1,11 +1,14 @@
-import { createHash, timingSafeEqual } from "node:crypto";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { getVisitStats } from "@/lib/visits";
 
-// unlisted visitor log. Without ?key= matching BEE_KEY it answers 404, so the
-// page is indistinguishable from a route that does not exist.
+import { isSignedIn } from "./auth";
+import { SignInForm } from "./sign-in-form";
+
+// unlisted visitor log at plain /bee. It asks for BEE_KEY once, then a cookie
+// scoped to /bee keeps the browser signed in. With BEE_KEY unset the route
+// answers 404, as if it did not exist.
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
@@ -13,16 +16,17 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-function keyMatches(given: string | undefined): boolean {
-  const expected = process.env.BEE_KEY;
-  if (!expected || !given) return false;
-  const digest = (value: string) => createHash("sha256").update(value).digest();
-  return timingSafeEqual(digest(given), digest(expected));
-}
+export default async function BeePage() {
+  if (!process.env.BEE_KEY) notFound();
 
-export default async function BeePage({ searchParams }: PageProps<"/bee">) {
-  const { key } = await searchParams;
-  if (!keyMatches(typeof key === "string" ? key : undefined)) notFound();
+  if (!(await isSignedIn())) {
+    return (
+      <main className="mx-auto w-full max-w-6xl px-4 py-10 font-mono text-sm text-ink-300">
+        <h1 className="text-2xl text-bone">Visitors</h1>
+        <SignInForm />
+      </main>
+    );
+  }
 
   const stats = await getVisitStats();
 

@@ -37,14 +37,16 @@ const STAGES = [
     n: "01",
     title: "Qualifiers",
     desc: "Compete in a 24-hour jeopardy-style CTF. The top 15 teams move on to the finals.",
-    meta: "Online · 24 – 25 Oct",
+    mode: "Online",
+    when: "24-25 Oct",
     art: ART.qualifier,
   },
   {
     n: "02",
     title: "Finals",
     desc: "Attack and attempt to infiltrate the physical network set up by the organising team.",
-    meta: "Offline · 29 – 30 Nov",
+    mode: "Offline",
+    when: "29-30 Nov",
     art: ART.finals,
   },
 ];
@@ -130,8 +132,8 @@ export function Timeline() {
                 <div className="tl-card__row">
                   <h3 className="tl-card__title">{s.title}</h3>
                   <p className="tl-card__meta">
-                    <span className="tl-card__idx">{s.n}</span>
-                    <span>{s.meta}</span>
+                    <span>{s.mode}</span>
+                    <span className="tl-card__idx">{s.when}</span>
                   </p>
                 </div>
                 <p className="tl-card__desc">{s.desc}</p>
