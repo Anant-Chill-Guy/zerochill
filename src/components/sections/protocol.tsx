@@ -73,19 +73,21 @@ export function Protocol() {
 
         <Spectrum className="pr-strip" />
 
-        <ul className="pr-list pr-list--rules">
-          {RULES.map((rule) => (
-            <li key={rule}>{rule}</li>
-          ))}
-        </ul>
-
-        <div className="pr-victory">
-          <h3 className="pr-victory__title">Victory conditions</h3>
-          <ul className="pr-list pr-list--victory">
-            {VICTORY.map((condition) => (
-              <li key={condition}>{condition}</li>
+        <div className="pr-groups">
+          <ul className="pr-list pr-list--rules">
+            {RULES.map((rule) => (
+              <li key={rule}>{rule}</li>
             ))}
           </ul>
+
+          <div className="pr-victory">
+            <h3 className="pr-victory__title">Victory conditions</h3>
+            <ul className="pr-list pr-list--victory">
+              {VICTORY.map((condition) => (
+                <li key={condition}>{condition}</li>
+              ))}
+            </ul>
+          </div>
         </div>
       </div>
     </section>

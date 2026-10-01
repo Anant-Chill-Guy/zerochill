@@ -753,20 +753,25 @@
     margin-top: clamp(3rem, 7vh, 5rem);
   }
 
-  /* the rules themselves: short lines, so they run two up on anything wide
-     enough to hold them side by side */
+  /* Two blocks side by side. The rules are short single lines, so five of them
+     in a two-up grid left the last cell of the grid empty; run as one column
+     beside the payoff there is no hole to read, and the full measure still
+     gets used. .pr-list--rules carries no styles — it is the hook the scroll
+     animation selects on. */
+  .pr-groups {
+    margin-top: 1.75rem;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+    gap: 0.9rem clamp(1.75rem, 4vw, 3.5rem);
+    align-items: start;
+  }
+
   .pr-list {
     list-style: none;
     margin: 0;
     padding: 0;
     display: grid;
     gap: 0.9rem;
-  }
-
-  .pr-list--rules {
-    margin-top: 1.75rem;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.9rem clamp(1rem, 2.4vw, 2.25rem);
   }
 
   .pr-list > li {
@@ -793,14 +798,8 @@
     background: var(--color-amber);
   }
 
-  /* the payoff block sits under the rules, split off by the same hairline the
-     footer uses to separate its own rows */
-  .pr-victory {
-    margin-top: clamp(2.25rem, 5vh, 3.25rem);
-    padding-top: clamp(1.5rem, 3vh, 2rem);
-    border-top: 1px solid var(--rule);
-  }
-
+  /* the payoff block is the second column; the grid does the spacing, so it
+     only carries the panel's own type */
   .pr-victory__title {
     font-family: var(--font-display);
     font-size: clamp(1.05rem, 1.6vw, 1.35rem);
@@ -810,13 +809,17 @@
 
   .pr-victory .pr-list {
     margin-top: 0.9rem;
-    max-width: 68ch;
   }
 
   @media (max-width: 860px) {
-    .pr-list--rules {
-      grid-template-columns: 1fr;
-      gap: 1rem;
+    .pr-groups {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 2rem;
+    }
+    /* stacked, the two blocks need the hairline back to stay separate */
+    .pr-victory {
+      padding-top: 1.75rem;
+      border-top: 1px solid var(--rule);
     }
     .pr-strip {
       --spectrum-gap: 0;
