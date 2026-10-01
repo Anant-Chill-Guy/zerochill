@@ -8,22 +8,24 @@ import { useGSAP } from "@gsap/react";
 
 gsap.registerPlugin(ScrollTrigger);
 
-// Portrait art is shared by both stages: it is the same card at the same
-// shape, so the two mobile cards come out one size and neither reads as a
-// narrower strip than the other.
+// Portrait art for the finals. The qualifier carries its own card, close
+// enough in shape that the two mobile cards still come out near one size.
 const PORTRAIT = { src: "/media/stage-card-tall.webp", w: 1200, h: 1853 };
 
 // Each stage carries its own pair, in the dimensions of the file: the art owns
 // its frame and its own ratio, so the card takes the box straight from the
 // image and never crops.
 const ART = {
+  // the qualifier card has a blank plate under the scene; its type sits in it
   qualifier: {
-    wide: { src: "/media/stage-card-wide-qualifier.webp", w: 1082, h: 633 },
-    tall: PORTRAIT,
+    wide: { src: "/media/qualifier-plate-wide.webp", w: 1226, h: 890 },
+    tall: { src: "/media/qualifier-plate-tall.webp", w: 622, h: 957 },
+    plate: true,
   },
   finals: {
     wide: { src: "/media/stage-card-wide.webp", w: 1500, h: 1086 },
     tall: PORTRAIT,
+    plate: false,
   },
 };
 
@@ -91,7 +93,7 @@ export function Timeline() {
           {STAGES.map((s) => (
             <li
               key={s.n}
-              className="tl-card"
+              className={`tl-card${s.art.plate ? " tl-card--plate" : ""}`}
               // the portrait art's ratio, so the mobile card can be sized
               // against a height budget instead of a shared width
               style={{ "--tl-ratio": s.art.tall.w / s.art.tall.h } as CSSProperties}

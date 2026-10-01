@@ -932,6 +932,62 @@
       padding-inline: 1.25rem;
     }
   }
+  /* Plate cards carry a blank dark plate under the scene, so the type sits
+     inside it instead of on a scrim. The insets are the plate's edges as a
+     share of the art (clear of the reticle), and the type scales with the
+     card so it fits the plate at every width. */
+  .tl-card--plate {
+    container-type: inline-size;
+  }
+
+  .tl-card--plate .tl-card__art::after {
+    content: none;
+  }
+
+  .tl-card--plate .tl-card__panel {
+    top: 75%;
+    right: 16%;
+    bottom: 5%;
+    left: 27%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .tl-card--plate .tl-card__title {
+    font-size: clamp(0.9rem, 5.2cqi, 1.35rem);
+  }
+
+  .tl-card--plate .tl-card__meta {
+    font-size: clamp(0.6rem, 2.9cqi, 0.72rem);
+  }
+
+  .tl-card--plate .tl-card__desc {
+    margin-top: 0.4rem;
+    font-size: clamp(0.68rem, 3.3cqi, 0.92rem);
+    line-height: 1.45;
+  }
+
+  @media (min-width: 1000px) {
+    .tl-card--plate .tl-card__panel {
+      top: 77.5%;
+      right: 16%;
+      bottom: 6%;
+      left: 13%;
+    }
+
+    .tl-card--plate .tl-card__title {
+      font-size: clamp(0.9rem, 3.2cqi, 1.35rem);
+    }
+
+    .tl-card--plate .tl-card__meta {
+      font-size: clamp(0.6rem, 1.6cqi, 0.72rem);
+    }
+
+    .tl-card--plate .tl-card__desc {
+      font-size: clamp(0.68rem, 2.2cqi, 0.92rem);
+    }
+  }
 }
 
 @layer base {
@@ -958,6 +1014,11 @@
     /* true black, matching the clip, so the letterbox either side of the 16:9
        plate is seamless against the artwork */
     background: #000;
+  }
+
+  /* intro already played within the cookie window (set pre-paint in layout) */
+  [data-intro="seen"] .pre {
+    display: none;
   }
 
   .pre__plate {
@@ -1325,12 +1386,19 @@
     z-index: 6;
     pointer-events: none;
     opacity: 0;
-    background: linear-gradient(
-      180deg,
-      rgba(11, 6, 4, 0) 38%,
-      rgba(11, 6, 4, 0.52) 76%,
-      rgba(11, 6, 4, 0.86) 100%
-    );
+    background:
+      linear-gradient(
+        90deg,
+        rgba(11, 6, 4, 0.82) 0%,
+        rgba(11, 6, 4, 0.55) 38%,
+        rgba(11, 6, 4, 0) 72%
+      ),
+      linear-gradient(
+        180deg,
+        rgba(11, 6, 4, 0) 38%,
+        rgba(11, 6, 4, 0.52) 76%,
+        rgba(11, 6, 4, 0.86) 100%
+      );
   }
 
   .stmt__caption {
@@ -1347,19 +1415,16 @@
     opacity: 0;
   }
 
+  /* the briefing: a dossier pinned to the left of the plate. Four voices,
+     one per beat: display lede, mono arsenal, serif warning, display sign-off */
   .stmt__message {
     position: absolute;
     left: clamp(1.25rem, 5vw, 4rem);
-    right: auto;
-    max-width: min(92vw, 62ch);
-    top: clamp(4.5rem, 14vh, 7.5rem);
+    right: clamp(1.25rem, 5vw, 4rem);
+    max-width: 44rem;
+    top: clamp(4.5rem, 13vh, 7.5rem);
     z-index: 8;
     margin: 0;
-    font-family: var(--font-display);
-    font-size: clamp(1.4rem, 4vw, 3.1rem);
-    line-height: 1.12;
-    letter-spacing: -0.015em;
-    text-transform: uppercase;
     color: var(--color-bone);
     text-align: left;
     text-shadow:
@@ -1377,6 +1442,26 @@
     background: var(--color-vermilion);
     box-shadow: 0 0 18px rgba(231, 63, 30, 0.6);
     transform-origin: left center;
+  }
+
+  .stmt__lede {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.25rem, 3.2vw, 2.6rem);
+    line-height: 1.08;
+    letter-spacing: -0.015em;
+    text-transform: uppercase;
+  }
+
+  .stmt__lede-line {
+    display: block;
+  }
+
+  /* the second line is the thesis, the first the hook; step it down */
+  .stmt__lede-line + .stmt__lede-line {
+    margin-top: 0.3em;
+    font-size: 0.62em;
+    color: var(--color-cream);
   }
 
   .stmt__word {
@@ -1397,10 +1482,94 @@
       0 2px 8px rgba(11, 6, 4, 0.85);
   }
 
+  /* the arsenal: one ledger row per discipline, category code on the left */
+  .stmt__arsenal {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    column-gap: clamp(1.25rem, 3vw, 2.5rem);
+    margin: clamp(1.1rem, 3vh, 2rem) 0 0;
+    padding: 0;
+    list-style: none;
+    font-family: var(--font-mono);
+    font-size: clamp(0.75rem, 1.05vw, 0.9rem);
+  }
+
+  .stmt__arm {
+    display: flex;
+    align-items: baseline;
+    gap: 0.9em;
+    padding-block: 0.5em;
+    border-top: 1px solid var(--rule-strong);
+    will-change: transform, opacity;
+  }
+
+  .stmt__arm-tag {
+    flex: none;
+    width: 7.5em;
+    font-size: 0.78em;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--color-amber);
+  }
+
+  .stmt__arm-act {
+    color: var(--color-bone);
+  }
+
+  .stmt__enemy {
+    margin: clamp(1rem, 2.6vh, 1.75rem) 0 0;
+    font-family: var(--font-brand);
+    font-style: italic;
+    font-size: clamp(1rem, 1.7vw, 1.4rem);
+    line-height: 1.3;
+    color: var(--color-cream);
+  }
+
+  /* the secret sits under a strip of redaction tape that peels away */
+  .stmt__redact {
+    position: relative;
+    display: inline-block;
+    color: var(--color-vermilion);
+  }
+
+  .stmt__redact-bar {
+    position: absolute;
+    inset: 0.12em -0.12em 0.02em;
+    background: var(--color-bone);
+    box-shadow: 0 0 0 1px rgba(11, 6, 4, 0.4);
+  }
+
+  .stmt__welcome {
+    margin: clamp(0.5rem, 1.6vh, 1rem) 0 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 4.2vw, 3.4rem);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+  }
+
+  @media (min-width: 760px) {
+    .stmt__arsenal {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
   @media (max-height: 600px) {
     .stmt__message {
       top: clamp(3.25rem, 11vh, 5rem);
-      font-size: clamp(1.1rem, 3.4vw, 1.9rem);
+    }
+    .stmt__lede {
+      font-size: clamp(1rem, 2.6vw, 1.6rem);
+    }
+    .stmt__arsenal {
+      margin-top: 0.6rem;
+      font-size: 0.7rem;
+    }
+    .stmt__arm {
+      padding-block: 0.3em;
+    }
+    .stmt__welcome {
+      font-size: clamp(1.2rem, 3vw, 2rem);
     }
     .stmt__caption {
       bottom: clamp(1rem, 4vh, 2rem);
@@ -1796,6 +1965,22 @@ html[data-theme="deep"] .stmt__circle-void {
       rgba(2, 21, 38, 0) 68%
     ),
     var(--color-iron-900);
+}
+
+html[data-theme="deep"] .stmt__veil {
+  background:
+    linear-gradient(
+      90deg,
+      rgba(2, 21, 38, 0.82) 0%,
+      rgba(2, 21, 38, 0.55) 38%,
+      rgba(2, 21, 38, 0) 72%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(2, 21, 38, 0) 38%,
+      rgba(2, 21, 38, 0.52) 76%,
+      rgba(2, 21, 38, 0.86) 100%
+    );
 }
 
 html[data-theme="deep"] .stmt__message-bar {

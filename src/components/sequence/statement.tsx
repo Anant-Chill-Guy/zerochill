@@ -12,7 +12,9 @@ import statementImage from "@/assets/bg-layer-2.jpg";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
-const HOLD_VH = 260;
+// the briefing runs four beats after the circle opens, so the hold is long
+// enough that each beat still lands at roughly one word per scroll notch
+const HOLD_VH = 340;
 
 // beat on the timeline where the circle starts opening; the plate pan rides it
 const OPEN_AT = 0.32;
@@ -23,12 +25,45 @@ const OPEN_AT = 0.32;
 const PAN_FROM = 15;
 const PAN_TO = 55;
 
-// overlay narration revealed word-by-word once the plant window is open
-const MESSAGE =
-  "As a Mossad operative, you seem pretty thirsty for action. Looks like war is waiting for you. Best of luck, soldier.";
-const MESSAGE_WORDS = MESSAGE.split(" ");
-const HIGHLIGHT = new Set(["mossad", "soldier"]);
+// overlay briefing, revealed in beats once the plant window is open:
+// lede, the arsenal (one row per CTF category), the warning, the welcome
+const LEDE = [
+  "The battlefield is invisible.",
+  "The weapons are code, intelligence, and deception.",
+];
+const ARSENAL = [
+  { tag: "Crypto", act: "Break ciphers" },
+  { tag: "Stego", act: "Uncover hidden messages" },
+  { tag: "Forensics", act: "Analyze forensic evidence" },
+  { tag: "Reversing", act: "Reverse engineer malware" },
+  { tag: "Pwn", act: "Exploit vulnerable systems" },
+  { tag: "OSINT", act: "Hunt intelligence across the web" },
+];
+const ENEMY = { before: "The enemy has hidden their", redacted: "secrets", after: "well." };
+const WELCOME = "Welcome to VOID CTF.";
+const HIGHLIGHT = new Set(["invisible", "void", "ctf"]);
 const bareWord = (w: string) => w.replace(/[^a-z]/gi, "").toLowerCase();
+
+// the full briefing as prose for assistive tech; the visual version is split
+const MESSAGE = [
+  LEDE.join(" "),
+  "Break ciphers, uncover hidden messages, analyze forensic evidence, reverse engineer malware, exploit vulnerable systems, and hunt intelligence across the web.",
+  `${ENEMY.before} ${ENEMY.redacted} ${ENEMY.after}`,
+  WELCOME,
+].join(" ");
+
+const splitWords = (text: string) =>
+  text.split(" ").map((w, i) => (
+    <span key={i} className="stmt__word">
+      <span
+        className={`stmt__word-in${
+          HIGHLIGHT.has(bareWord(w)) ? " stmt__word-in--hot" : ""
+        }`}
+      >
+        {w}
+      </span>
+    </span>
+  ));
 
 // layout offset survives transforms unlike a bounding rect
 function offsetWithin(el: HTMLElement, ancestor: HTMLElement) {
@@ -59,6 +94,11 @@ export function Statement() {
       const bar = q(".stmt__message-bar")[0] as HTMLElement;
       const media = q(".stmt__circle-media")[0] as HTMLElement;
       const words = q(".stmt__word-in") as HTMLElement[];
+      const ledeWords = q(".stmt__lede .stmt__word-in") as HTMLElement[];
+      const arms = q(".stmt__arm") as HTMLElement[];
+      const enemy = q(".stmt__enemy")[0] as HTMLElement;
+      const redact = q(".stmt__redact-bar")[0] as HTMLElement;
+      const welcomeWords = q(".stmt__welcome .stmt__word-in") as HTMLElement[];
 
       if (!stage || !slot || !window_ || !media || lines.length === 0) return;
 
@@ -94,6 +134,8 @@ export function Statement() {
         gsap.set([veil, window_, message], { autoAlpha: 1 });
         gsap.set(words, { autoAlpha: 1, scale: 1 });
         gsap.set(bar, { autoAlpha: 1, scaleX: 1 });
+        gsap.set([...arms, enemy], { autoAlpha: 1 });
+        gsap.set(redact, { scaleX: 0 });
         lines.forEach((l) => l.classList.add("is-lit"));
         return;
       }
@@ -104,6 +146,9 @@ export function Statement() {
       // words shrunk to a point; they pop out one after another on scroll
       gsap.set(words, { autoAlpha: 0, scale: 0.4 });
       gsap.set(bar, { autoAlpha: 0, scaleX: 0.6 });
+      gsap.set(arms, { autoAlpha: 0, x: -18 });
+      gsap.set(enemy, { autoAlpha: 0, y: 10 });
+      gsap.set(redact, { scaleX: 1 });
 
       const thresholds = lines.map((_, i) => 0.04 + i * 0.085);
 
@@ -156,8 +201,8 @@ export function Statement() {
       // clear the statement lines so the plant reads clean under the bubble
       tl.to(inners, { autoAlpha: 0, duration: 0.1 }, 0.5);
 
-      // kinetic type: accent rule pops in, then each word pops out like a
-      // bubble, one after another as you keep scrolling
+      // kinetic type: accent rule pops in, then the lede pops out word by
+      // word like bubbles, one after another as you keep scrolling
       tl.to(message, { autoAlpha: 1, duration: 0.05 }, 0.56);
       tl.to(
         bar,
@@ -171,15 +216,43 @@ export function Statement() {
         0.58,
       );
       tl.to(
-        words,
+        ledeWords,
         {
           scale: 1,
           autoAlpha: 1,
           ease: "back.out(2.4)",
-          duration: 0.16,
-          stagger: 0.04,
+          duration: 0.14,
+          stagger: 0.035,
         },
         0.62,
+      );
+
+      // the arsenal checks in one category at a time
+      tl.to(
+        arms,
+        { autoAlpha: 1, x: 0, ease: "power3.out", duration: 0.14, stagger: 0.06 },
+        1.12,
+      );
+
+      // the warning settles, then its redaction tape peels off the secret
+      tl.to(enemy, { autoAlpha: 1, y: 0, ease: "power2.out", duration: 0.12 }, 1.56);
+      tl.to(
+        redact,
+        { scaleX: 0, transformOrigin: "right center", ease: "power3.inOut", duration: 0.14 },
+        1.68,
+      );
+
+      // sign-off lands last and hardest
+      tl.to(
+        welcomeWords,
+        {
+          scale: 1,
+          autoAlpha: 1,
+          ease: "back.out(3)",
+          duration: 0.16,
+          stagger: 0.05,
+        },
+        1.84,
       );
 
       // The plate travels left → right from the beat the circle opens, so the
@@ -246,20 +319,39 @@ export function Statement() {
 
         <div className="stmt__veil" aria-hidden="true" />
 
-        <p className="stmt__message" aria-label={MESSAGE}>
-          <span className="stmt__message-bar" aria-hidden="true" />
-          {MESSAGE_WORDS.map((w, i) => (
-            <span key={i} className="stmt__word" aria-hidden="true">
-              <span
-                className={`stmt__word-in${
-                  HIGHLIGHT.has(bareWord(w)) ? " stmt__word-in--hot" : ""
-                }`}
-              >
-                {w}
-              </span>
-            </span>
-          ))}
-        </p>
+        <div className="stmt__message">
+          <p className="sr-only">{MESSAGE}</p>
+          <div aria-hidden="true">
+            <span className="stmt__message-bar" />
+            <p className="stmt__lede">
+              {LEDE.map((line, i) => (
+                <span key={i} className="stmt__lede-line">
+                  {splitWords(line)}
+                </span>
+              ))}
+            </p>
+
+            <ul className="stmt__arsenal">
+              {ARSENAL.map(({ tag, act }) => (
+                <li key={tag} className="stmt__arm">
+                  <span className="stmt__arm-tag">{tag}</span>
+                  <span className="stmt__arm-act">{act}</span>
+                </li>
+              ))}
+            </ul>
+
+            <p className="stmt__enemy">
+              {ENEMY.before}{" "}
+              <span className="stmt__redact">
+                {ENEMY.redacted}
+                <span className="stmt__redact-bar" />
+              </span>{" "}
+              {ENEMY.after}
+            </p>
+
+            <p className="stmt__welcome">{splitWords(WELCOME)}</p>
+          </div>
+        </div>
       </div>
     </section>
   );

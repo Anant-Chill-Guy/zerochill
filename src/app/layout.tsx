@@ -31,6 +31,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
+      // data-theme / data-intro are set pre-paint by the inline script below
+      suppressHydrationWarning
       className={`${archivoBlack.variable} ${jetbrainsMono.variable} ${lora.variable} h-full antialiased`}
     >
       <head>
@@ -48,7 +50,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="flex min-h-full flex-col bg-iron-950">
         <script
           dangerouslySetInnerHTML={{
-            __html: `try{if(localStorage.getItem('void-theme')==='deep')document.documentElement.setAttribute('data-theme','deep')}catch(e){}`,
+            __html: `try{if(localStorage.getItem('void-theme')==='deep')document.documentElement.setAttribute('data-theme','deep')}catch(e){}try{if(/(?:^|; )void-intro=1/.test(document.cookie))document.documentElement.setAttribute('data-intro','seen')}catch(e){}`,
           }}
         />
         {children}

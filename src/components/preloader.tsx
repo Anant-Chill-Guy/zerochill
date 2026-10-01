@@ -23,6 +23,12 @@ const SPEED = 1.35;
 // the visitor behind the loader. Sits just past the clip's own 10s runtime.
 const STALL_TIMEOUT_MS = 13000;
 
+// once the intro has played, repeat loads inside this window skip straight to
+// the page. The cookie is read pre-paint in layout.tsx to hide the loader
+// before it can flash, so the name must stay in sync with that script.
+const SEEN_COOKIE = "void-intro";
+const SEEN_TTL_S = 600;
+
 export function Preloader({
   onOpen,
   onDone,
@@ -40,6 +46,14 @@ export function Preloader({
       const video = videoRef.current;
       if (!el) return;
 
+      if (document.documentElement.dataset.intro === "seen") {
+        video?.pause();
+        onOpen();
+        onDone();
+        setGone(true);
+        return;
+      }
+
       const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       const plate = gsap.utils.selector(root)(".pre__plate")[0] as HTMLElement;
 
@@ -47,6 +61,7 @@ export function Preloader({
       const reveal = () => {
         if (fired) return;
         fired = true;
+        document.cookie = `${SEEN_COOKIE}=1; max-age=${SEEN_TTL_S}; path=/; samesite=lax`;
 
         const tl = gsap.timeline({
           onComplete: () => {
