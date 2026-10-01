@@ -17,11 +17,12 @@ export const content = {
     headline: "CTF",
     sub: "Nobody has reached the bottom.",
     readout: [
-      { label: "Layers", value: "6" },
-      { label: "Window", value: "24 h" },
-      { label: "Range", value: "Isolated" },
-      { label: "Vaults", value: "42" },
+      { label: "Format", value: "24 H Offline" },
+      { label: "Battleground", value: "Physical Network" },
+      { label: "Mode", value: "Attack / Defense" },
+      { label: "Hosted By", value: "COE — Cyber Security" },
     ],
+    tagline: "The uniqueness makes us what we are",
     mosaicAlt:
       "A riverside nuclear plant at dusk, cut into a grid of windows.",
   },

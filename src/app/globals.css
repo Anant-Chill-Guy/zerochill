@@ -1292,11 +1292,6 @@
     inset-inline: clamp(1.25rem, 4vw, 2.5rem);
     bottom: clamp(1.5rem, 4vw, 2.75rem);
     z-index: 3;
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 1.25rem;
-    padding-top: 1.25rem;
-    border-top: 1px solid var(--rule);
   }
 
   /* the readout sits on its own solid band (matching the next section's bg)
@@ -1311,28 +1306,74 @@
     pointer-events: none;
   }
 
+  /* four evenly distributed blocks, separated by negative space alone — the
+     single hairline above the row is the only rule in the strip */
+  .ingress__readout-row {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: clamp(1.25rem, 3vw, 2.75rem);
+    padding-top: clamp(1.05rem, 2vw, 1.5rem);
+    border-top: 1px solid var(--rule);
+  }
+
   .ingress__cell-label {
     display: block;
     font-family: var(--font-mono);
-    font-size: 0.625rem;
-    letter-spacing: 0.24em;
+    font-size: 0.6875rem;
+    letter-spacing: 0.28em;
     text-transform: uppercase;
     color: var(--color-ink-400);
   }
 
   .ingress__cell-value {
     display: block;
-    margin-top: 0.4rem;
+    margin-top: clamp(0.5rem, 1.1vw, 0.75rem);
     font-family: var(--font-display);
-    font-size: clamp(1rem, 1.7vw, 1.4rem);
-    line-height: 1;
+    font-size: clamp(1.05rem, 1.85vw, 1.6rem);
+    line-height: 1.04;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+    color: var(--color-bone);
+    /* "ATTACK / DEFENSE" is the only value long enough to wrap, and it should
+       break after the slash rather than orphan one of the two words */
+    text-wrap: balance;
+  }
+
+  /* the host is a byline, not a spec: it steps back to mono so the three
+     competition facts above stay the loudest thing in the strip */
+  .ingress__readout-row > div:last-child .ingress__cell-value {
+    font-family: var(--font-mono);
+    font-size: clamp(0.8rem, 1.05vw, 0.95rem);
+    letter-spacing: 0.14em;
+    line-height: 1.3;
     color: var(--color-cream);
   }
 
+  .ingress__tagline {
+    margin: clamp(1rem, 2.2vw, 1.5rem) 0 0;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.34em;
+    /* trailing letter-space after the last glyph would push the line off
+       centre by half a step */
+    text-indent: 0.34em;
+    text-transform: uppercase;
+    text-align: center;
+    color: var(--color-ink-400);
+  }
+
   @media (max-width: 720px) {
-    .ingress__readout {
+    .ingress__readout-row {
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 1rem;
+      gap: 1.25rem 1rem;
+    }
+    .ingress__cell-value {
+      letter-spacing: 0;
+    }
+    .ingress__tagline {
+      font-size: 0.625rem;
+      letter-spacing: 0.24em;
+      text-indent: 0.24em;
     }
   }
 
@@ -1358,11 +1399,21 @@
     }
     .ingress__readout {
       bottom: clamp(1rem, 3vh, 1.5rem);
+    }
+    .ingress__readout-row {
       padding-top: 0.85rem;
       gap: 0.75rem 1rem;
     }
     .ingress__cell-value {
-      font-size: clamp(0.95rem, 2.4vh, 1.2rem);
+      font-size: clamp(0.9rem, 2.2vh, 1.15rem);
+      margin-top: 0.35rem;
+    }
+    .ingress__readout-row > div:last-child .ingress__cell-value {
+      font-size: 0.75rem;
+    }
+    .ingress__tagline {
+      margin-top: 0.75rem;
+      font-size: 0.5625rem;
     }
   }
 }

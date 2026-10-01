@@ -176,14 +176,17 @@ export function Ingress({ opened }: { opened: boolean }) {
           </div>
         </div>
 
-        <dl className="ingress__readout">
-          {content.ingress.readout.map((cell) => (
-            <div key={cell.label}>
-              <dt className="ingress__cell-label">{cell.label}</dt>
-              <dd className="ingress__cell-value">{cell.value}</dd>
-            </div>
-          ))}
-        </dl>
+        <div className="ingress__readout">
+          <dl className="ingress__readout-row">
+            {content.ingress.readout.map((cell) => (
+              <div key={cell.label}>
+                <dt className="ingress__cell-label">{cell.label}</dt>
+                <dd className="ingress__cell-value">{cell.value}</dd>
+              </div>
+            ))}
+          </dl>
+          <p className="ingress__tagline">{content.ingress.tagline}</p>
+        </div>
       </div>
     </section>
   );
