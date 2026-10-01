@@ -16,12 +16,6 @@ const RULES = [
   "Have fun and learn!",
 ];
 
-// what winning looks like off the scoreboard
-const VICTORY = [
-  "Be the first to capture the flag",
-  "The first team to solve the puzzle below will get direct entry to the Red & Blue CTF",
-];
-
 export function Protocol() {
   const root = useRef<HTMLElement | null>(null);
 
@@ -45,13 +39,6 @@ export function Protocol() {
           ease: "power3.out",
           scrollTrigger: { trigger: ".pr-list--rules", start: "top 84%" },
         });
-        gsap.from(".pr-victory", {
-          autoAlpha: 0,
-          y: 18,
-          duration: 0.6,
-          ease: "power3.out",
-          scrollTrigger: { trigger: ".pr-victory", start: "top 88%" },
-        });
       });
       return () => mm.revert();
     },
@@ -69,25 +56,11 @@ export function Protocol() {
           </p>
         </div>
 
-        <div className="pr-groups">
-          <div className="pr-group">
-            <h3 className="pr-group__title">Rules of engagement</h3>
-            <ul className="pr-list pr-list--rules">
-              {RULES.map((rule) => (
-                <li key={rule}>{rule}</li>
-              ))}
-            </ul>
-          </div>
-
-          <div className="pr-group pr-victory">
-            <h3 className="pr-group__title">Victory conditions</h3>
-            <ul className="pr-list pr-list--victory">
-              {VICTORY.map((condition) => (
-                <li key={condition}>{condition}</li>
-              ))}
-            </ul>
-          </div>
-        </div>
+        <ul className="pr-list pr-list--rules">
+          {RULES.map((rule) => (
+            <li key={rule}>{rule}</li>
+          ))}
+        </ul>
       </div>
     </section>
   );

@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Archivo_Black, JetBrains_Mono, Lora } from "next/font/google";
 import "./globals.css";
 
+import { VisitBeacon } from "@/components/visit-beacon";
+
 // wordmark face used only for the mark
 const archivoBlack = Archivo_Black({
   variable: "--font-archivo-black",
@@ -54,6 +56,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           }}
         />
         {children}
+        <VisitBeacon />
       </body>
     </html>
   );

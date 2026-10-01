@@ -748,32 +748,17 @@
     color: var(--color-ink-300);
   }
 
-  /* Two blocks side by side, each under its own colour bar: the rules in
-     tangerine, the payoff in amber, matching their bullets. .pr-list--rules
-     carries no styles — it is the hook the scroll animation selects on. */
-  .pr-groups {
-    margin-top: clamp(3rem, 7vh, 5rem);
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.9rem clamp(1.75rem, 4vw, 3.5rem);
-    align-items: start;
-  }
-
-  .pr-group {
-    padding-top: 1.75rem;
-    border-top: 3px solid var(--color-tangerine);
-  }
-
-  .pr-victory {
-    border-top-color: var(--color-amber);
-  }
-
   .pr-list {
     list-style: none;
     margin: 0;
     padding: 0;
     display: grid;
     gap: 0.9rem;
+  }
+
+  /* the rules sit straight under the intro, one per line */
+  .pr-list--rules {
+    margin-top: clamp(2.5rem, 6vh, 4rem);
   }
 
   .pr-list > li {
@@ -793,29 +778,6 @@
     width: 6px;
     height: 6px;
     background: var(--color-tangerine);
-  }
-
-  /* gold for the win conditions, so the two lists do not read as one */
-  .pr-list--victory > li::before {
-    background: var(--color-amber);
-  }
-
-  .pr-group__title {
-    font-family: var(--font-display);
-    font-size: clamp(1.05rem, 1.6vw, 1.35rem);
-    letter-spacing: -0.01em;
-    color: var(--color-bone);
-  }
-
-  .pr-group .pr-list {
-    margin-top: 0.9rem;
-  }
-
-  @media (max-width: 860px) {
-    .pr-groups {
-      grid-template-columns: minmax(0, 1fr);
-      gap: 2rem;
-    }
   }
 
   @media (max-width: 560px) {

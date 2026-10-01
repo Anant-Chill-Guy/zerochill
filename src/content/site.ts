@@ -64,7 +64,6 @@ export const content = {
       { label: "About", href: "https://void-society.in/" },
       { label: "voidsociety@kiet.edu", href: "mailto:voidsociety@kiet.edu" },
       { label: "Rules", href: "#rules" },
-      { label: "Write-ups", href: "#" },
     ],
     disclaimer:
       "Every system in the range is synthetic. Nothing here touches a live utility.",
