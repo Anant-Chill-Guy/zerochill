@@ -1,44 +1,87 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 
 gsap.registerPlugin(ScrollTrigger);
 
+// start and end are local calendar days, end inclusive; they drive the status
 const PHASES = [
   {
     n: "01",
-    title: "Recon",
-    desc: "Trace ASTAROTH's telemetry across the offline physical network.",
-    tags: ["OSINT", "Network", "Recon"],
+    title: "Registration",
+    when: "2 – 23 Oct",
+    start: "2026-10-02",
+    end: "2026-10-23",
+    desc: "Form a team, register it, and lock in your roster before the window closes on the 23rd.",
+    tags: ["Online", "Teams"],
   },
   {
     n: "02",
-    title: "Breach",
-    desc: "Turn one exposed edge service into a foothold on the network.",
-    tags: ["Web", "Pwn"],
+    title: "Qualifier CTF",
+    when: "24 – 25 Oct",
+    start: "2026-10-24",
+    end: "2026-10-25",
+    desc: "A 24-hour jeopardy-style CTF. Pick challenges off the board across web, pwn, crypto, reversing, forensics and OSINT; every solve banks points, and the top 15 teams go through.",
+    tags: ["Jeopardy", "Online", "24 h"],
   },
   {
     n: "03",
-    title: "Pivot",
-    desc: "Cross the corporate security boundary toward the control zone.",
-    tags: ["Network", "AD", "Crypto"],
+    title: "Qualifier results",
+    when: "27 Oct",
+    start: "2026-10-27",
+    end: "2026-10-27",
+    desc: "Scores are verified and the 15 finalist teams are announced.",
+    tags: ["Online"],
   },
   {
     n: "04",
-    title: "Escalate",
-    desc: "Defeat the process controls and take the operator seat.",
-    tags: ["Reversing", "Pwn"],
+    title: "Attack-Defense finals",
+    when: "29 – 30 Nov",
+    start: "2026-11-29",
+    end: "2026-11-30",
+    desc: "Every team hunts the same objective on the physical network for 24 hours. Find your way to it, and throw rivals off the trail along the way: plant false leads, bury the real path, waste their time. Anything goes inside the network. Nothing leaves it.",
+    tags: ["Attack-Defense", "Offline", "24 h"],
   },
   {
     n: "05",
-    title: "Capture",
-    desc: "Reach centrifuge control before Site-9 hits critical enrichment.",
-    tags: ["ICS", "Forensics"],
+    title: "Closing ceremony",
+    when: "30 Nov",
+    start: "2026-11-30",
+    end: "2026-11-30",
+    desc: "Final standings are revealed and the winning teams are felicitated on stage.",
+    tags: ["Results", "Awards"],
   },
 ];
+
+type Status = { kind: "done" | "live" | "next"; label: string };
+
+const DAY = 86_400_000;
+
+const dayStart = (iso: string) => {
+  const [y, m, d] = iso.split("-").map(Number);
+  return new Date(y, m - 1, d).getTime();
+};
+
+// done for past phases, live while one runs, and a countdown on the next one
+function statuses(now: number): (Status | null)[] {
+  let nextMarked = false;
+  return PHASES.map((p) => {
+    const from = dayStart(p.start);
+    const to = dayStart(p.end) + DAY;
+    if (now >= to) return { kind: "done", label: "Done" };
+    if (now >= from) return { kind: "live", label: "Live now" };
+    if (nextMarked) return null;
+    nextMarked = true;
+    const days = Math.ceil((from - now) / DAY);
+    return {
+      kind: "next",
+      label: days <= 1 ? "Starts tomorrow" : `Starts in ${days} days`,
+    };
+  });
+}
 
 type Pt = { x: number; y: number };
 
@@ -66,6 +109,15 @@ export function Operation() {
   const routeRef = useRef<SVGPathElement | null>(null);
   const inkRef = useRef<SVGPathElement | null>(null);
   const headRef = useRef<SVGCircleElement | null>(null);
+  // client only: the server render has no clock that matches the visitor's
+  const [status, setStatus] = useState<(Status | null)[]>([]);
+
+  useEffect(() => {
+    const tick = () => setStatus(statuses(Date.now()));
+    tick();
+    const id = window.setInterval(tick, 60_000);
+    return () => window.clearInterval(id);
+  }, []);
 
   useGSAP(
     () => {
@@ -245,11 +297,23 @@ export function Operation() {
             <path className="op-trace__ink" ref={inkRef} />
             <circle className="op-trace__head" ref={headRef} r="2.6" />
           </svg>
-          {PHASES.map((p) => (
-            <li key={p.n} className="op-phase">
+          {PHASES.map((p, i) => (
+            <li
+              key={p.n}
+              className="op-phase"
+              data-status={status[i]?.kind}
+            >
               <span className="op-phase__node" aria-hidden="true" />
               <span className="op-phase__idx">{p.n}</span>
               <div className="op-phase__body">
+                <p className="op-phase__when">
+                  <time dateTime={p.start}>{p.when}</time>
+                  {status[i] && (
+                    <span className={`op-status op-status--${status[i]!.kind}`}>
+                      {status[i]!.label}
+                    </span>
+                  )}
+                </p>
                 <h3 className="op-phase__title">{p.title}</h3>
                 <p className="op-phase__desc">{p.desc}</p>
                 <ul className="op-tags">
