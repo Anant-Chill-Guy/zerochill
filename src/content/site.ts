@@ -17,14 +17,14 @@ export const content = {
     headline: "CTF",
     sub: "Nobody has reached the bottom.",
     readout: [
-      { label: "Online CTF", value: "24 – 25 Oct" },
+      { label: "Online / Qualifiers CTF", value: "24 – 25 Oct" },
+      { label: "Mode", value: "Jeopardy" },
+      { label: "Format", value: "24 Hours" },
       { label: "Offline CTF", value: "29 – 30 Nov" },
-      { label: "Format", value: "24 H Offline" },
-      { label: "Battleground", value: "Physical Network" },
-      { label: "Mode", value: "Attack / Defense" },
-      { label: "Hosted By", value: "KIET Cyber Security Center of Excellence" },
+      { label: "Mode", value: "Attack Defense" },
+      { label: "Format", value: "24 Hours Offline" },
     ],
-    tagline: "The uniqueness makes us what we are",
+    tagline: "Organized by the KIET Cyber Security Center of Excellence",
     mosaicAlt:
       "A riverside nuclear plant at dusk, cut into a grid of windows.",
   },
@@ -55,23 +55,24 @@ export const content = {
   },
 
   footer: {
-    first: "VOID",
+    // the mark's two words, set in the display face and drawn by TechText
+    first: "Void",
     second: "CTF",
-    columns: [
-      {
-        title: "Society",
-        links: [
-          { label: "About", href: "https://void-society.in/" },
-          { label: "Email", href: "mailto:voidsociety@kiet.edu" },
-          { label: "Phone", href: "tel:+919876543210" },
-          { label: "Rules", href: "#rules" },
-          { label: "Write-ups", href: "#" },
-        ],
-      },
+    // one flat line of links, no column headings: the address is written out as
+    // the address, and Phone came out when the row went horizontal
+    links: [
+      { label: "About", href: "https://void-society.in/" },
+      { label: "voidsociety@kiet.edu", href: "mailto:voidsociety@kiet.edu" },
+      { label: "Rules", href: "#rules" },
+      { label: "Write-ups", href: "#" },
     ],
     disclaimer:
       "Every system in the range is synthetic. Nothing here touches a live utility.",
-    legal: { label: "Void Society", href: "https://void-society.in/" },
+    society: {
+      label: "Void Society",
+      url: "void-society.in",
+      href: "https://void-society.in/",
+    },
     credit: "Design & Develope by Team Void",
     cta: { label: "Register", href: "https://void-ctf.ctfd.io/register" },
   },

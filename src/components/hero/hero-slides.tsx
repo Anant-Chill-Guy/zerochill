@@ -3,22 +3,37 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 
+/**
+ * The ink pairing a frame supports. The plate rotates through three families —
+ * sunlit aerials that need brown type on a pale halo, night shots that need
+ * bone on near-black, and the overhead satellite plates, which are busy mid-
+ * toned brown throughout and take the bone with a brown halo so the type sits
+ * in the frame's own colour instead of a cold dark one.
+ */
+export type HeroTone = "sand" | "night" | "overhead";
+
 // full-bleed hero backdrop: the industrial aerials crossfade one into the next,
-// the outgoing frame fading out as the incoming frame fades in.
-const SLIDES = [
-  "/media/hero-slide-1.jpg",
-  "/media/hero-slide-2.jpg",
-  "/media/hero-slide-3.jpg",
-  "/media/hero-slide-4.jpg",
-  "/media/hero-slide-5.jpg",
-  "/media/hero-slide-6.jpg",
-  "/media/hero-slide-7.jpg",
+// the outgoing frame fading out as the incoming frame fades in. The tone rides
+// with the frame, so the lockup never has to guess what is behind it.
+const SLIDES: ReadonlyArray<{ src: string; tone: HeroTone }> = [
+  { src: "/media/hero-slide-1.jpg", tone: "overhead" },
+  { src: "/media/hero-slide-2.jpg", tone: "overhead" },
+  { src: "/media/hero-slide-3.jpg", tone: "sand" },
+  { src: "/media/hero-slide-4.jpg", tone: "night" },
+  { src: "/media/hero-slide-5.jpg", tone: "night" },
+  { src: "/media/hero-slide-6.jpg", tone: "night" },
+  { src: "/media/hero-slide-7.jpg", tone: "sand" },
 ];
 
 const HOLD_MS = 5000;
 const FADE_MS = 1400;
 
-export function HeroSlides() {
+export function HeroSlides({
+  onToneChange,
+}: {
+  /** the ink pairing the lockup should wear for the frame now on screen */
+  onToneChange?: (tone: HeroTone) => void;
+}) {
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
@@ -31,12 +46,16 @@ export function HeroSlides() {
     return () => window.clearInterval(id);
   }, []);
 
+  useEffect(() => {
+    onToneChange?.(SLIDES[index].tone);
+  }, [index, onToneChange]);
+
   return (
     <div
       className="absolute inset-0"
       style={{ backgroundColor: "var(--color-iron-950)" }}
     >
-      {SLIDES.map((src, i) => (
+      {SLIDES.map(({ src }, i) => (
         <Image
           key={src}
           src={src}

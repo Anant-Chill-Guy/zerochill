@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
@@ -8,13 +8,17 @@ import { useGSAP } from "@gsap/react";
 import { content } from "@/content/site";
 import { useTheme } from "@/components/use-theme";
 import { BlackHoleHeroSection } from "@/components/black-hole-hero-section";
-import { HeroSlides } from "@/components/hero/hero-slides";
+import { HeroSlides, type HeroTone } from "@/components/hero/hero-slides";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 export function Ingress({ opened }: { opened: boolean }) {
   const root = useRef<HTMLElement | null>(null);
   const { theme } = useTheme();
+  // the lockup is set in whichever ink the frame behind it supports; the
+  // backdrop owns the rotation, so it owns this too. Slide 1 is the first of
+  // the satellite plates, so that pairing is what prerenders.
+  const [tone, setTone] = useState<HeroTone>("overhead");
 
   // the black-hole disc runs a hotter, more saturated orange in deep mode so it
   // pops against the blue; default mode keeps the component's normal orange
@@ -123,10 +127,15 @@ export function Ingress({ opened }: { opened: boolean }) {
   );
 
   return (
-    <section ref={root} className="seq" aria-labelledby="ingress-headline">
+    <section
+      ref={root}
+      className="seq"
+      data-tone={tone}
+      aria-labelledby="ingress-headline"
+    >
       <div className="seq__stage">
         <div className="ingress__bg" aria-hidden="true">
-          <HeroSlides />
+          <HeroSlides onToneChange={setTone} />
         </div>
 
         <div className="seq__inner ingress__hero">
@@ -174,14 +183,18 @@ export function Ingress({ opened }: { opened: boolean }) {
         </div>
 
         <div className="ingress__readout">
-          <dl className="ingress__readout-row">
-            {content.ingress.readout.map((cell) => (
-              <div key={cell.label}>
-                <dt className="ingress__cell-label">{cell.label}</dt>
-                <dd className="ingress__cell-value">{cell.value}</dd>
-              </div>
-            ))}
-          </dl>
+          {/* the strip is one line at every width: on a phone it scrolls
+              sideways rather than folding into rows */}
+          <div className="ingress__readout-scroll">
+            <dl className="ingress__readout-row">
+              {content.ingress.readout.map((cell) => (
+                <div key={`${cell.label}-${cell.value}`}>
+                  <dt className="ingress__cell-label">{cell.label}</dt>
+                  <dd className="ingress__cell-value">{cell.value}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
           <p className="ingress__tagline">{content.ingress.tagline}</p>
         </div>
       </div>
