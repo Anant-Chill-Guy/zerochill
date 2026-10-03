@@ -54,6 +54,59 @@ export const content = {
     ],
   },
 
+  sponsor: {
+    title: "Sponsors",
+    intro:
+      "The teams and companies keeping the range running. VOID CTF is free to enter because of them.",
+    partners: [
+      {
+        category: "Certification partner",
+        name: "APIsec University",
+        tagline: "Free API security training.",
+        blurb:
+          "APIsec University offers free API security training for AppSec and DevSecOps professionals.",
+        href: "https://au.apisec.ai/",
+        url: "au.apisec.ai",
+        logo: { src: "/media/sponsor-apisec-university.png", w: 696, h: 256 },
+        plate: "#ffffff",
+        brand: "#bbd7df",
+      },
+      {
+        category: "Community partner",
+        name: "Hackitise Labs",
+        tagline: "Offensive Operations Certification.",
+        blurb:
+          "A hands-on, proctored certification in three tiers, Spark, Forge and Ghost, with lab work run against an isolated live range.",
+        href: "https://cert.hackitiselabs.in/",
+        url: "cert.hackitiselabs.in",
+        logo: { src: "/media/sponsor-hackitise-white.png", w: 984, h: 223 },
+        plate: "#0a0a0a",
+        brand: "#ff5a1f",
+      },
+      {
+        category: "Domain partner",
+        name: ".xyz",
+        tagline: "For every website, everywhere.",
+        blurb:
+          "The .xyz domain is used by builders, startups and creators to put their work online.",
+        href: "https://gen.xyz/",
+        url: "gen.xyz",
+        logo: { src: "/media/sponsor-xyz-white.svg", w: 85, h: 50 },
+        // the sponsor's own colours, used only inside its plate
+        plate: "#000000",
+        brand: "#fff532",
+      },
+    ],
+    pitch: {
+      title: "Sponsor the range",
+      body: "VOID CTF runs a 24-hour online qualifier and a 24-hour attack-defense final on a physical network. Sponsors put their name in front of the teams who play both.",
+      cta: {
+        label: "Email voidsociety@kiet.edu",
+        href: "mailto:voidsociety@kiet.edu?subject=Sponsoring%20VOID%20CTF",
+      },
+    },
+  },
+
   footer: {
     // the mark's two words, set in the display face and drawn by TechText
     first: "Void",
@@ -63,7 +116,9 @@ export const content = {
     links: [
       { label: "About", href: "https://void-society.in/" },
       { label: "voidsociety@kiet.edu", href: "mailto:voidsociety@kiet.edu" },
-      { label: "Rules", href: "#rules" },
+      // root-relative so the links still land from /sponsor
+      { label: "Rules", href: "/#rules" },
+      { label: "Sponsors", href: "/sponsor" },
     ],
     disclaimer:
       "Every system in the range is synthetic. Nothing here touches a live utility.",

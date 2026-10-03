@@ -4,6 +4,7 @@ import { useRef, useState, type MouseEvent } from "react";
 import Image from "next/image";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
+import { usePathname } from "next/navigation";
 
 type NavLink = {
   label: string;
@@ -25,6 +26,10 @@ const LINKS: NavLink[] = [
   { label: "Timeline", href: "#root-protocol" },
 ];
 
+// in-page anchors only exist on the landing; elsewhere they route back to it
+const resolve = (l: NavLink, onHome: boolean): NavLink =>
+  !onHome && l.href.startsWith("#") ? { ...l, href: `/${l.href}`, align: undefined } : l;
+
 const externalAttrs = (l: NavLink) =>
   l.external ? { target: "_blank", rel: "noopener noreferrer" } : {};
 
@@ -43,6 +48,9 @@ function jumpTo(e: MouseEvent<HTMLAnchorElement>, link: NavLink) {
 export function SiteNav() {
   const root = useRef<HTMLElement | null>(null);
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
+  const onHome = pathname === "/";
+  const links = LINKS.map((l) => resolve(l, onHome));
 
   useGSAP(
     () => {
@@ -87,7 +95,7 @@ export function SiteNav() {
         </a>
 
         <nav className="hidden items-center gap-9 md:flex" aria-label="Primary">
-          {LINKS.map((l) => (
+          {links.map((l) => (
             <a
               key={l.label}
               href={l.href}
@@ -101,6 +109,13 @@ export function SiteNav() {
         </nav>
 
         <div className="flex items-center gap-3">
+          <a
+            href="/sponsor"
+            className="btn btn--ghost btn--sm hidden md:inline-flex"
+            aria-current={pathname === "/sponsor" ? "page" : undefined}
+          >
+            Sponsors
+          </a>
           <a
             href="https://void-ctf.ctfd.io/"
             target="_blank"
@@ -128,7 +143,7 @@ export function SiteNav() {
             className="mx-auto flex w-full max-w-[1440px] flex-col gap-1 px-6 py-4"
             aria-label="Primary"
           >
-            {LINKS.map((l) => (
+            {links.map((l) => (
               <a
                 key={l.label}
                 href={l.href}
@@ -142,6 +157,14 @@ export function SiteNav() {
                 {l.label}
               </a>
             ))}
+            <a
+              href="/sponsor"
+              className="btn btn--ghost btn--sm mt-3 self-start"
+              aria-current={pathname === "/sponsor" ? "page" : undefined}
+              onClick={() => setOpen(false)}
+            >
+              Sponsors
+            </a>
             <a
               href="https://void-ctf.ctfd.io/"
               target="_blank"

@@ -9,6 +9,7 @@ import { content } from "@/content/site";
 import { useTheme } from "@/components/use-theme";
 import { BlackHoleHeroSection } from "@/components/black-hole-hero-section";
 import { HeroSlides, type HeroTone } from "@/components/hero/hero-slides";
+import { SponsorMarquee } from "@/components/sponsor/sponsor-marquee";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -196,6 +197,7 @@ export function Ingress({ opened }: { opened: boolean }) {
             </dl>
           </div>
           <p className="ingress__tagline">{content.ingress.tagline}</p>
+          <SponsorMarquee className="ingress__sponsors" />
         </div>
       </div>
     </section>
