@@ -72,6 +72,18 @@ export const content = {
         brand: "#bbd7df",
       },
       {
+        category: "Certification partner",
+        name: "HackerDNA",
+        tagline: "Learn ethical hacking by actually doing it.",
+        blurb:
+          "Browser-based labs and challenges across web, Linux privilege escalation, cryptography, forensics and reverse engineering.",
+        href: "https://hackerdna.com/",
+        url: "hackerdna.com",
+        logo: { src: "/media/sponsor-hackerdna.svg", w: 175, h: 50 },
+        plate: "#020617",
+        brand: "#22c55e",
+      },
+      {
         category: "Community partner",
         name: "Hackitise Labs",
         tagline: "Offensive Operations Certification.",
@@ -82,6 +94,18 @@ export const content = {
         logo: { src: "/media/sponsor-hackitise-white.png", w: 984, h: 223 },
         plate: "#0a0a0a",
         brand: "#ff5a1f",
+      },
+      {
+        category: "Community partner",
+        name: "Cyndia",
+        tagline: "Let's Cyberize India.",
+        blurb:
+          "A cybersecurity community behind the Cyber Unfolded blog and The Files Lab, an anonymous file-sharing service.",
+        href: "https://cyndia.in/",
+        url: "cyndia.in",
+        logo: { src: "/media/sponsor-cyndia-white.svg", w: 2640, h: 765 },
+        plate: "#0a0a0a",
+        brand: "#fe1e55",
       },
       {
         category: "Domain partner",

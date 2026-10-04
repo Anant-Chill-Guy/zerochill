@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 175 50">
+  <!-- H: width=17, height=25, ratio 2:3 exact -->
+  <g stroke="#22c55e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="13" y1="13" x2="13" y2="38"/>
+    <line x1="30" y1="13" x2="30" y2="38"/>
+    <line x1="13" y1="25.5" x2="30" y2="25.5"/>
+  </g>
+  <!-- Cursor -->
+  <rect x="30" y="33.5" width="6" height="6" rx="1.5" fill="#22c55e"/>
+  <!-- Wordmark -->
+  <text x="47" y="27" font-family="ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace" font-size="21" fill="#e5e7eb">hacker<tspan font-weight="700" fill="#22c55e">dna</tspan></text>
+  <text x="48" y="39" font-family="ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace" font-size="9" fill="#6b7280" letter-spacing="2.2">ETHICAL HACKING</text>
+</svg>

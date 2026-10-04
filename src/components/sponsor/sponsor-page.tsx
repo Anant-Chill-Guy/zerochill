@@ -3,15 +3,22 @@
 import { useRef, type CSSProperties } from "react";
 import Image from "next/image";
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 
 import { content } from "@/content/site";
 import { DuneField } from "@/components/sponsor/dune-field";
 
-gsap.registerPlugin(ScrollTrigger);
-
 const { sponsor } = content;
+
+// one group per category, in the order categories first appear
+const groups = sponsor.partners.reduce<
+  { category: string; partners: (typeof sponsor.partners)[number][] }[]
+>((acc, p) => {
+  const group = acc.find((g) => g.category === p.category);
+  if (group) group.partners.push(p);
+  else acc.push({ category: p.category, partners: [p] });
+  return acc;
+}, []);
 
 export function SponsorPage() {
   const root = useRef<HTMLDivElement | null>(null);
@@ -30,17 +37,12 @@ export function SponsorPage() {
             { scaleX: 0, transformOrigin: "left center", duration: 0.5, stagger: 0.08 },
             "-=0.55",
           )
-          .from(".sp-intro", { autoAlpha: 0, y: 14, duration: 0.6 }, "-=0.3");
-
-        gsap.from(".sp-item", {
-          autoAlpha: 0,
-          y: 26,
-          duration: 0.75,
-          stagger: 0.12,
-          ease: "power3.out",
-          clearProps: "transform",
-          scrollTrigger: { trigger: ".sp-list", start: "top 84%" },
-        });
+          .from(".sp-intro", { autoAlpha: 0, y: 14, duration: 0.6 }, "-=0.3")
+          .from(
+            ".sp-item",
+            { autoAlpha: 0, y: 18, duration: 0.6, stagger: 0.08, clearProps: "transform" },
+            "-=0.35",
+          );
       });
       return () => mm.revert();
     },
@@ -62,47 +64,46 @@ export function SponsorPage() {
             <span />
           </div>
           <p className="sp-intro">{sponsor.intro}</p>
-        </div>
-      </section>
 
-      <section className="sp-section" aria-label="Our sponsors">
-        <ul className="sp-inner sp-list">
-          {sponsor.partners.map((p) => (
-            <li key={p.name} className="sp-item">
-              <h2 className="sp-cat">{p.category}</h2>
-              <a
-                className="sp-plate"
-                style={
-                  { "--sp-plate": p.plate, "--sp-brand": p.brand } as CSSProperties
-                }
-                href={p.href}
-                target="_blank"
-                rel="noopener noreferrer"
+          <div className="sp-list" role="list" aria-label="Our sponsors">
+            {groups.map((g) => (
+              <section
+                key={g.category}
+                className="sp-group"
+                role="listitem"
+                style={{ "--sp-count": g.partners.length } as CSSProperties}
               >
-                <span className="sp-plate__rule" aria-hidden="true" />
-                <span className="sp-plate__logo-box">
-                  <Image
-                    className="sp-plate__logo"
-                    src={p.logo.src}
-                    width={p.logo.w}
-                    height={p.logo.h}
-                    alt={`${p.name} logo`}
-                    unoptimized
-                  />
-                </span>
-                <span className="sp-plate__body">
-                  <span className="sp-plate__name">{p.name}</span>
-                  <span className="sp-plate__tagline">{p.tagline}</span>
-                  <span className="sp-plate__blurb">{p.blurb}</span>
-                  <span className="sp-plate__link">
-                    {p.url}
-                    <span aria-hidden="true"> ↗</span>
-                  </span>
-                </span>
-              </a>
-            </li>
-          ))}
-        </ul>
+                <h2 className="sp-cat">
+                  {g.category}
+                  {g.partners.length > 1 ? "s" : ""}
+                </h2>
+                <ul className="sp-group__logos">
+                  {g.partners.map((p) => (
+                    <li key={p.name} className="sp-item">
+                      <a
+                        className="sp-logo"
+                        href={p.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <span className="sp-logo__box">
+                          <Image
+                            className="sp-logo__img"
+                            src={p.logo.src}
+                            width={p.logo.w}
+                            height={p.logo.h}
+                            alt={p.name}
+                            unoptimized
+                          />
+                        </span>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            ))}
+          </div>
+        </div>
       </section>
 
       <section className="sp-pitch">
