@@ -5,7 +5,7 @@ import { SponsorPage } from "@/components/sponsor/sponsor-page";
 import { SiteFooter } from "@/components/site-footer";
 
 export const metadata: Metadata = {
-  title: "Sponsors | VOID CTF",
+  title: "Sponsors",
   description:
     "The sponsors behind VOID CTF, and how to put your name on the range.",
 };

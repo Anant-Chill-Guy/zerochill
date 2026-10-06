@@ -73,7 +73,7 @@ export function SiteNav() {
     <header ref={root} className="nav-shell absolute inset-x-0 top-0 z-40">
       <div className="mx-auto flex w-full max-w-[1440px] items-center justify-between gap-6 px-6 py-4 lg:px-10">
         <a
-          href="https://ctf.void-society.in/"
+          href="/"
           className="nav-brand-link"
           aria-label="VOID CTF home"
         >
